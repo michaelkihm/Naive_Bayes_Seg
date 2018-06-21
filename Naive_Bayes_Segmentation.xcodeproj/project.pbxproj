@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C40E156120DAFCB600658B2E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40E156020DAFCB600658B2E /* main.cpp */; };
+		C40E156C20DC20DC00658B2E /* Region.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40E156A20DC20DC00658B2E /* Region.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		C40E155D20DAFCB600658B2E /* Naive_Bayes_Segmentation */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Naive_Bayes_Segmentation; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40E156020DAFCB600658B2E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		C40E156A20DC20DC00658B2E /* Region.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Region.cpp; sourceTree = "<group>"; };
+		C40E156B20DC20DC00658B2E /* Region.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Region.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,8 +61,34 @@
 			isa = PBXGroup;
 			children = (
 				C40E156020DAFCB600658B2E /* main.cpp */,
+				C40E156920DC203500658B2E /* ML_module */,
+				C40E156820DC202200658B2E /* Region_Growing_Module */,
+				C40E156720DC1FED00658B2E /* Region_module */,
 			);
 			path = Naive_Bayes_Segmentation;
+			sourceTree = "<group>";
+		};
+		C40E156720DC1FED00658B2E /* Region_module */ = {
+			isa = PBXGroup;
+			children = (
+				C40E156A20DC20DC00658B2E /* Region.cpp */,
+				C40E156B20DC20DC00658B2E /* Region.hpp */,
+			);
+			path = Region_module;
+			sourceTree = "<group>";
+		};
+		C40E156820DC202200658B2E /* Region_Growing_Module */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Region_Growing_Module;
+			sourceTree = "<group>";
+		};
+		C40E156920DC203500658B2E /* ML_module */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ML_module;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C40E156120DAFCB600658B2E /* main.cpp in Sources */,
+				C40E156C20DC20DC00658B2E /* Region.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
