@@ -17,7 +17,6 @@ int main(int argc, const char * argv[]) {
     
     
     
-    
    
     Point p(12,3), p1(12,4), p3(12,5), p4(12,6), p5(12,7);
     
@@ -28,8 +27,10 @@ int main(int argc, const char * argv[]) {
     gray.at<uchar>(p5) = 13;
     //imshow("gray", gray);
     //cvWaitKey();
-     Region r(&test, &gray);
+    Region::setSourceImages(&test, &gray);
+    Region r;
     
+  
     r.push_back(p); r.push_back(p1); r.push_back(p3); r.push_back(p4); r.push_back(p5);
     
     std::cout << r.getSize() << std::endl;

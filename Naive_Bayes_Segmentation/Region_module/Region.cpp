@@ -7,7 +7,19 @@
 //
 
 #include "Region.hpp"
-#include <cmath>
+
+/* ****************************************************** */
+/* set source images for all regions in the region list   */
+/* ****************************************************** */
+void Region::setSourceImages(Mat *rgb, Mat *gray)
+{
+    src_img_rgb = rgb;
+    src_img_gray = gray;
+}
+
+Mat* Region::src_img_rgb;
+Mat* Region::src_img_gray;
+
 /* ************************************ */
 /* compute mean value of region pixel   */
 /* ************************************ */
