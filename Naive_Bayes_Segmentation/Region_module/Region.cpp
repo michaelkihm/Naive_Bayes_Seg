@@ -23,10 +23,10 @@ Mat* Region::src_img_gray;
 /* ************************************ */
 /* compute mean value of region pixel   */
 /* ************************************ */
-double Region::getMean()
+double Region::getMean() 
 {
     float sum = 0;
-    for(std::vector<Point>::iterator it = Reg_vector.begin(); it != Reg_vector.end(); ++it)
+    for(std::list<Point>::iterator it = Reg_vector.begin(); it != Reg_vector.end(); ++it)
         sum += src_img_gray->at<uchar>(it->y,it->x);
     return sum/Reg_vector.size();
 }
@@ -34,7 +34,7 @@ double Region::getMean()
 /* ************************************ */
 /* compute mean value of region pixel   */
 /* ************************************ */
-double Region::getStdDev()
+double Region::getStdDev() 
 {
     
     double var = 0;                              //define variance
@@ -47,7 +47,7 @@ double Region::getStdDev()
         histogram[i] = 0;
 
     //calculate histogram of the region
-    for(std::vector<Point>::iterator it = Reg_vector.begin(); it != Reg_vector.end(); ++it){
+    for(std::list<Point>::iterator it = Reg_vector.begin(); it != Reg_vector.end(); ++it){
         histogram[src_img_gray->at<uchar>(it->y,it->x)] +=1;
     }
 
@@ -61,4 +61,6 @@ double Region::getStdDev()
     return sqrt(var);
     
 }
+
+
 
