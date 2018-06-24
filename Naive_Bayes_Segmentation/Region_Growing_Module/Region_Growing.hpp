@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include "../Region_module/Region.hpp"
-
+#include <memory>
 
 class Region_Growing
 {
@@ -20,19 +20,30 @@ private:
     Mat *src_rgb_img;
     Mat src_gray_img;
     Mat out_img; //image to show segmentation result
-    //vector<Region*> region_list; //vector of pointer to regions
-    list<Region*> region_list;
+    vector<Region*> region_list; //vector of pointer to regions
+    //list<Region*> region_list;
+ 
     
     //methods
-    void addRegion(Region *r) { region_list.push_back(r); }
-    void deleteRegion(Region *r) { region_list.remove(r); }
-    void merge(Region *r1, Region *r2);
+    //void push_back(Region *r) { region_list.push_back(r); }
+    //void deleteRegion(int index) { region_list.erase(region_list.begin() + index); }
+    //void merge(int r1_ind, int r2_ind);
+    void initialize();
 public:
     Region_Growing(Mat *src);
+    Region_Growing() = delete;
+    unsigned long  size() const { return region_list.size(); }
     /*void disp() {imshow("test rgb", *src_rgb_img);cvWaitKey();
         imshow("test gray", src_gray_img);
         cvWaitKey();}*/
+    unsigned long r_size(int i) { return region_list[i]->getSize(); }
+    double r_mean(int i) { return region_list[i]->getMean(); }
     
+    void push_back(Region *r) { region_list.push_back(r); } //for testing in public
+    void delete_region(int index) { region_list.erase(region_list.begin() + index); }//for testing in public
+    void merge_regions(int r1_ind, int r2_ind);//for testing in public
+    
+    void perform();
 };
 
 

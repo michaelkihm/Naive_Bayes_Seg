@@ -27,6 +27,7 @@ private:
     static Mat *src_img_gray;
     list<Point> Reg_vector; //vector containing the pixels of the region
     list<Point> Reg_boundary; //vector containing the boundary pixels of the region
+    Region *adjacentRegion;
     //TODO stuff for Mahanalobis distance
     double StdDev; //standard deviation as texture descriptor
     double Mean;  //gray scale mean for color descriptor
@@ -34,7 +35,7 @@ private:
     
 public:
     Region() { }
-    ~Region() { cout << "called deconstructor" << endl; }
+    ~Region() { cout << "called region deconstructor" << endl; }
    // void dispImg() { imshow("test", *(src_img_rgb)); cvWaitKey();}
     static void setSourceImages(Mat *rgb, Mat *gray);
     
@@ -44,7 +45,7 @@ public:
     void push_back_boundary(Point pix) { Reg_boundary.push_back(pix); }
    
     unsigned long getSize()  { return Reg_vector.size(); }
-    double getMean() const;  //method for mean gray color
+    double getMean();  //method for mean gray color
     double getStdDev();//method for standard deviaton (used as texture descr)
     
     friend class Region_Growing;
@@ -67,5 +68,6 @@ public:
 inline bool operator==( Region& r1,  Region& r2){
     return r1.getSize() == r2.getSize() && r1.getMean() == r2.getMean() && r1.getStdDev() == r2.getStdDev();
 }
+
 
 #endif /* Region_hpp */
