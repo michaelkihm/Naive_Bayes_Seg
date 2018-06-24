@@ -18,7 +18,6 @@ int main(int argc, const char * argv[]) {
     cvtColor(test, gray, CV_RGB2GRAY);
     
     
-
     
     
   
@@ -43,17 +42,17 @@ int main(int argc, const char * argv[]) {
     //std::cout << r.getSize() << std::endl;
     cout << "r1 mean: "<<r.getMean() << endl;
     cout << "r2 mean: "<<r2.getMean() << endl;
-    /*
+    
     r += r2;
     cout << "\n" << r.getStdDev() << endl;
     cout << "r1 mean: "<<r.getMean() << endl;
     cout << "r1 size: "<<r.getSize() << endl;
     //bool b1 = r == r;
     //cout <<"is equal?: "<< b1 << endl;
-      */
+     
     cout << "---------------------- \n" << endl;
     Region_Growing test_r(&test);
-    
+
     
     test_r.push_back(&r  );
     test_r.push_back(&r2);
@@ -62,6 +61,6 @@ int main(int argc, const char * argv[]) {
 
     cout <<  "size after merge "<<test_r.size() << endl;
     cout <<test_r.r_size(0) << " mean: "<< test_r.r_mean(0)<< endl;
-     
+    
     return 0;
 }

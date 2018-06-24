@@ -43,10 +43,17 @@ public:
     
     void push_back(Point pix) { Reg_vector.push_back(pix); }
     void push_back_boundary(Point pix) { Reg_boundary.push_back(pix); }
-   
+    
     unsigned long getSize()  { return Reg_vector.size(); }
     double getMean();  //method for mean gray color
     double getStdDev();//method for standard deviaton (used as texture descr)
+    
+    
+    //TO DO
+    //void find_adj_region(); might not be needed
+    bool is_adjacent(Region *r);
+    void compute_boundary();
+    
     
     friend class Region_Growing;
     
