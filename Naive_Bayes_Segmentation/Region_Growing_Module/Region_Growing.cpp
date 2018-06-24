@@ -38,5 +38,6 @@ void Region_Growing::init()
 {
     int n_regions = src_rgb_img->cols * src_rgb_img->rows;
     int n_rows = src_rgb_img->rows;
-    region_list[0] = new Region; //test init of a region
+    region_num_img = Mat::zeros(src_rgb_img->rows,src_rgb_img->cols, CV_8UC1);
+    //region_list.push_back(new Region);
 }

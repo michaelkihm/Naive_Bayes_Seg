@@ -19,6 +19,7 @@ private:
     //data
     Mat *src_rgb_img;
     Mat src_gray_img;
+    Mat region_num_img; //image in which pixel have the value of the region they belong to
     Mat out_img; //image to show segmentation result
     vector<Region*> region_list; //vector of pointer to regions
     //list<Region*> region_list;

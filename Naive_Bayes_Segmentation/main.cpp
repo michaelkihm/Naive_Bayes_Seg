@@ -17,10 +17,6 @@ int main(int argc, const char * argv[]) {
     Mat gray;
     cvtColor(test, gray, CV_RGB2GRAY);
     
-    
-    
-    
-  
    
     Point p(12,3), p1(12,4), p3(12,5), p4(12,6), p5(12,7);
     Point p21(13,3), p22(13,4), p23(13,5), p24(13,6), p25(13,7);
@@ -36,6 +32,9 @@ int main(int argc, const char * argv[]) {
     Region r, r2;
     Region::setSourceImages(&test, &gray);
   
+   
+
+    
     r.push_back(p); r.push_back(p1); r.push_back(p3); r.push_back(p4); r.push_back(p5);
     r2.push_back(p21); r2.push_back(p22); r2.push_back(p23); r2.push_back(p24); r2.push_back(p25);
     
@@ -52,7 +51,7 @@ int main(int argc, const char * argv[]) {
      
     cout << "---------------------- \n" << endl;
     Region_Growing test_r(&test);
-
+    test_r.init();
     
     test_r.push_back(&r  );
     test_r.push_back(&r2);
