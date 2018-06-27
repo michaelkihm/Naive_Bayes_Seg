@@ -11,6 +11,11 @@
 #include "Region_module/Region.hpp"
 #include "Region_Growing.hpp"
 #include <list>
+#include <set>
+#include <math.h>
+#include <time.h>       /* time */
+#include <stdlib.h>     /* srand, rand */
+
 
 int main(int argc, const char * argv[]) {
     Mat test = imread("BOLOGNA4.jpg");
@@ -20,6 +25,7 @@ int main(int argc, const char * argv[]) {
    
     Point p(12,3), p1(12,4), p3(12,5), p4(12,6), p5(12,7);
     Point p21(13,3), p22(13,4), p23(13,5), p24(13,6), p25(13,7);
+    
     
     //gray.at<uchar>(p) = 40;
     //gray.at<uchar>(p1) = 50;
@@ -50,16 +56,26 @@ int main(int argc, const char * argv[]) {
     //cout <<"is equal?: "<< b1 << endl;
      
     cout << "---------------------- \n" << endl;
-    Region_Growing test_r(&test);
-    test_r.init();
+    Region_Growing test_r(&test), test_ini(&test);
+
+    test_r.slic_wrapper();
     
     test_r.push_back(&r  );
     test_r.push_back(&r2);
     cout <<  test_r.size() << endl;
-    test_r.merge_regions(0, 1);
+    //test_r.merge_regions(0, 1);
 
     cout <<  "size after merge "<<test_r.size() << endl;
     cout <<test_r.r_size(0) << " mean: "<< test_r.r_mean(0)<< endl;
+    
+    test_ini.init();
+    set<int> s;
+    test_ini.rand_num(0.20,s);
+    set<int>::iterator it;
+    for (it = s.begin(); it != s.end(); ++it)
+        cout << (*it) << endl;
+    
+    
     
     return 0;
 }

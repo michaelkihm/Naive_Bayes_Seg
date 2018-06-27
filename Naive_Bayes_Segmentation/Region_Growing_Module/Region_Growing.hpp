@@ -10,7 +10,9 @@
 #define Region_Growing_hpp
 
 #include <stdio.h>
+#include <set>
 #include "../Region_module/Region.hpp"
+#include "slic.h"
 
 
 class Region_Growing
@@ -42,11 +44,13 @@ public:
     double r_stddev(int i) const { return region_list[i]->getStdDev(); }
     
     void push_back(Region *r) { region_list.push_back(r); } //for testing in public
-    void delete_region(int index) { region_list.erase(region_list.begin() + index); }//for testing in public
+    void delete_region(int index) { delete region_list[2]; region_list.erase(region_list.begin() + index); }//for testing in public
     void merge_regions(int r1_ind, int r2_ind);//for testing in public
-    void init();
+    void init();//for testing in public
+    void draw_output();//for testing in public
+    void rand_num(float p, set<int>& rand_set);
     
-    
+    void slic_wrapper();
     void perform();
 };
 
