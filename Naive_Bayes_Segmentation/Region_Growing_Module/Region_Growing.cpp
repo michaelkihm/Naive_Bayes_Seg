@@ -49,9 +49,9 @@ void Region_Growing::rand_num(float p, set<int>& rand_set)
    
 }
 
-/* ********************************************** */
-/* initialization for the RG algorithm            */
-/* ********************************************** */
+/* ************************************************************************ */
+/* initialization for the RG algorithm when not using superpixels           */
+/* ************************************************************************ */
 void Region_Growing::init()
 {
     float count=0;
@@ -77,21 +77,42 @@ void Region_Growing::slic_wrapper()
     
     Mat *lab_image = new Mat(src_rgb_img->rows, src_rgb_img->cols, CV_8UC3);
     cvtColor(*src_rgb_img, *lab_image, CV_BGR2Lab);
-    Mat image = src_rgb_img->clone();
-    int w = image.cols, h = image.rows;
-    int nr_superpixels = 4000;
+    int w = src_rgb_img->cols, h = src_rgb_img->rows;
+    int nr_superpixels = 1500;
     int nc = 40;
-    
+    int slic_buffer = 100;
     double step = sqrt((w * h) / (double) nr_superpixels);
-    
+
     Slic slic;
     slic.generate_superpixels(lab_image, step, nc);
-    slic.create_connectivity(lab_image);
     
-    /* Display the contours and show the result. */
-    slic.display_contours(&image, CV_RGB(255,0,0));
-    imshow("result", image);
-    cvWaitKey(0);
     
+    for(int i=0; i<nr_superpixels+slic_buffer; i++){
+        //Region newRegion(&image);
+        Region* r =new Region;// newRegion(&image,&gray_image);
+        region_list.push_back(r);
+    }
+    
+    for (int x = 0; x < src_rgb_img->cols; x++) {
+        for (int y = 0; y < src_rgb_img->rows; y++) {
+            Point p = Point(x,y);
+            region_list[ slic.getCluster(x, y) ]->push_back(p);    
+        }
+    }
+    
+    //number of superpixel is not excatly known before SLIC execution. Therefore the variable
+    //slic_buffer is used. Here the empty and not needed regions are deleted
+    while(r_size(region_list.size() - 1) == 0)
+        region_list.erase(region_list.end()-1);
+    
+    //initialize region_num_img
+    region_num_img = Mat::zeros(src_rgb_img->rows,src_rgb_img->cols, CV_32FC1);
+    for (int c = 0; c < region_num_img.cols; c++)
+        for (int r = 0; r < region_num_img.rows; r++)
+            region_num_img.at<float>(r,c) = (float)slic.getCluster(c, r);
+    
+
+    delete lab_image;
+    cout << "Finished generating SLIC superpixel" << endl;
 }
 

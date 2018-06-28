@@ -63,7 +63,6 @@ public:
     /* Class constructors and deconstructors. */
     Slic();
     ~Slic();
-    int getSize() {return centers.size();}
     long countStuff();
     /* Generate an over-segmentation for an image. */
     void generate_superpixels(Mat *image, int step, int nc);
@@ -74,6 +73,9 @@ public:
     void display_center_grid(Mat *image, Scalar colour);
     void display_contours(Mat *image, Scalar colour);
     void colour_with_cluster_means(Mat *image);
+    
+    //added method for slic_wrapper
+    int getCluster(int i, int y) const { return clusters[i][y]; }
 };
 
 #endif
