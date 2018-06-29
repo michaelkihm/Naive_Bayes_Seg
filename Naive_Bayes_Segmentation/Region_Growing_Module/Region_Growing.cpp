@@ -116,3 +116,31 @@ void Region_Growing::slic_wrapper()
     cout << "Finished generating SLIC superpixel" << endl;
 }
 
+
+/* ****************************************** */
+/* execute the region growing algorithm       */
+/* ****************************************** */
+void Region_Growing::perform()
+{
+    slic_wrapper();
+    set<int> rand_set;
+    float p = 0.20;
+    rand_num(p, rand_set);
+    for(set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
+    {
+        for(int i = *it+1; i != *it; i++)
+        {
+            if(region_list[*it]->is_adjacent(region_list[i], &region_num_img))
+                merge_regions(*it, i);
+            //TO CHECK
+            i == region_list.size() - 1? i = 0 : i=i;
+        }
+        //region_num_img[*it]
+        //region_num_img[*it] find adjacent region -
+        //check if region is in rand_set: if yes, delete it
+        //compute diff colour
+        //compute diff stdDev
+        //compute diff arrangement
+        
+    }
+}

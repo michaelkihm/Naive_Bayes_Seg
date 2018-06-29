@@ -32,6 +32,8 @@ private:
     double StdDev; //standard deviation as texture descriptor
     double Mean;  //gray scale mean for color descriptor
     unsigned long Size; //region size
+    bool check_neighborhood(Point p, float v, Mat* region_num_img);
+    bool is_pixel_valid(Point p, int rows, int cols);
     
 public:
     Region() { }
@@ -47,11 +49,11 @@ public:
     unsigned long getSize()  { return Reg_vector.size(); }
     double getMean();  //method for mean gray color
     double getStdDev();//method for standard deviaton (used as texture descr)
-    
+    float getRegionNr(Mat *region_num_img);
     
     //TO DO
     //void find_adj_region(); might not be needed
-    bool is_adjacent(Region *r);
+    bool is_adjacent(Region *r, Mat* region_num_img);
     void compute_boundary();
     
     

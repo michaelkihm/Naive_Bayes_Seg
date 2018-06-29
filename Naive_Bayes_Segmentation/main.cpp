@@ -57,8 +57,8 @@ int main(int argc, const char * argv[]) {
      
     cout << "---------------------- \n" << endl;
     Region_Growing test_r(&test), test_ini(&test);
-
-    //test_r.slic_wrapper();
+    test_ini.perform();
+    
     
     test_r.push_back(&r  );
     test_r.push_back(&r2);
@@ -68,10 +68,9 @@ int main(int argc, const char * argv[]) {
     cout <<  "size after merge "<<test_r.size() << endl;
     cout <<test_r.r_size(0) << " mean: "<< test_r.r_mean(0)<< endl;
     
-    test_ini.slic_wrapper();
+    //test_ini.slic_wrapper();
     cout <<" \nsize reg list: " << test_ini.size() << endl;
 
-    
     
     
     return 0;
