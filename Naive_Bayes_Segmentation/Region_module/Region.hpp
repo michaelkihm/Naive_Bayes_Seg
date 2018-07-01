@@ -33,7 +33,7 @@ private:
     double Mean;  //gray scale mean for color descriptor
     unsigned long Size; //region size
     bool check_neighborhood(Point p, float v, Mat* region_num_img);
-    bool is_pixel_valid(Point p, int rows, int cols);
+    bool is_pixel_valid(int r, int c, int rows, int cols);
     
 public:
     Region() { }
@@ -49,12 +49,12 @@ public:
     unsigned long getSize()  { return Reg_vector.size(); }
     double getMean();  //method for mean gray color
     double getStdDev();//method for standard deviaton (used as texture descr)
+    double compArr(Region* r1, Region* r2); //TO DO
     float getRegionNr(Mat *region_num_img);
     
-    //TO DO
-    //void find_adj_region(); might not be needed
+    
     bool is_adjacent(Region *r, Mat* region_num_img);
-    void compute_boundary();
+    void compute_boundary(Mat* region_num_image);
     
     
     friend class Region_Growing;
@@ -68,8 +68,6 @@ public:
         return *this;
         
     }
-    
-
     
 };
 

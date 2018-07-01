@@ -48,10 +48,12 @@ public:
     void merge_regions(int r1_ind, int r2_ind);//for testing in public
     void init();//for testing in public
     void draw_output();//for testing in public
-    void rand_num(float p, set<int>& rand_set);
+    void rand_num(float p, set<int>& rand_set);//for testing in public
+    void update_reg_num_image(int i); //for testing in public
     
     void slic_wrapper();
     void perform();
+    void display_contours();//to be implemented
 };
 
 

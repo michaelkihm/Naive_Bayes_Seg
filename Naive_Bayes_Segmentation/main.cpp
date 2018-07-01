@@ -19,6 +19,7 @@
 
 int main(int argc, const char * argv[]) {
     Mat test = imread("/Users/michaelkihm/Documents/CV_projects/final HTCV/Training/311068.jpg");//dog.png" 6.2
+    //Mat test = imread("dog.png");//dog.png" 6.2
     Mat gray;
     cvtColor(test, gray, CV_RGB2GRAY);
     
@@ -56,8 +57,8 @@ int main(int argc, const char * argv[]) {
     //cout <<"is equal?: "<< b1 << endl;
      
     cout << "---------------------- \n" << endl;
-    Region_Growing test_r(&test), test_ini(&test);
-    test_ini.perform();
+    Region_Growing test_r(&test);
+    //test_ini.perform();
     
     
     test_r.push_back(&r  );
@@ -68,10 +69,18 @@ int main(int argc, const char * argv[]) {
     cout <<  "size after merge "<<test_r.size() << endl;
     cout <<test_r.r_size(0) << " mean: "<< test_r.r_mean(0)<< endl;
     
-    //test_ini.slic_wrapper();
-    cout <<" \nsize reg list: " << test_ini.size() << endl;
+    
+
+
+  
+
 
     
-    
+
+      cout << "\n--------------------------------" << endl;
+    Region_Growing test_ini(&test);
+    test_ini.slic_wrapper();
+    test_ini.display_contours();
+    cout <<" \nsize reg list: " << test_ini.size() << endl;
     return 0;
 }
