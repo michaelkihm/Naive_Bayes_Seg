@@ -15,6 +15,7 @@
 #include <math.h>
 #include <time.h>       /* time */
 #include <stdlib.h>     /* srand, rand */
+#include <string>
 
 
 int main(int argc, const char * argv[]) {
@@ -67,20 +68,42 @@ int main(int argc, const char * argv[]) {
     //test_r.merge_regions(0, 1);
 
     cout <<  "size after merge "<<test_r.size() << endl;
-    cout <<test_r.r_size(0) << " mean: "<< test_r.r_mean(0)<< endl;
+    cout <<test_r.r_size(0) << " mean: "<< test_r.r_mean(0)<< "\n"<<endl;
+    
+    set<int> rand_set{12,2,7,8,9,0,14,67,89,90,30,40};
     
     
+    for(set<int>::iterator it = rand_set.begin(); it != rand_set.end(); it++)
+    {
+        if(*it < 50)
+            cout << *it << endl;
 
 
-  
-
-
+    }
+    cout << "\n--------------------------------" << endl;
+    vector<int> v{0,1,2,3,4,5,6,7,8,9,10,11};
+    int is = 3;
+    bool b=false;
+    for(int i = is+1; i != is; i++)
+    {
+        i == v.size() - 1? i = 0 : i=i;
+        cout << i << endl;
+        if(b==true)
+            break;
+        if(i==7)
+            b=true;
+    }
+    cout << "\n--------------------------------" << endl;
+    
+    
+    //return 0;
     
 
-      cout << "\n--------------------------------" << endl;
     Region_Growing test_ini(&test);
-    test_ini.slic_wrapper();
+    test_ini.perform();
     test_ini.display_contours();
     cout <<" \nsize reg list: " << test_ini.size() << endl;
     return 0;
 }
+
+

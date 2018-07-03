@@ -37,7 +37,7 @@ private:
     
 public:
     Region() { }
-    ~Region() { cout << "called region deconstructor" << endl; }
+    ~Region() {  }
    // void dispImg() { imshow("test", *(src_img_rgb)); cvWaitKey();}
     static void setSourceImages(Mat *rgb, Mat *gray);
     
@@ -63,7 +63,7 @@ public:
     Region &operator+=( Region& r)
     {
         Reg_vector.splice(Reg_vector.begin(), r.Reg_vector); //splices r in front of Reg_vector
-        Reg_boundary.splice(Reg_boundary.begin(), r.Reg_boundary); //splices r in front of Reg_vector
+        //Reg_boundary.splice(Reg_boundary.begin(), r.Reg_boundary); //splices r in front of Reg_vector
         
         return *this;
         

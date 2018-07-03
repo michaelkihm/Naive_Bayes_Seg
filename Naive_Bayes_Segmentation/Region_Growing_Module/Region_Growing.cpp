@@ -10,6 +10,7 @@
 #include <math.h>
 #include <time.h>       /* time */
 #include <stdlib.h>     /* srand, rand */
+#include <string>
 
 
 /* ************************************ */
@@ -27,8 +28,13 @@ Region_Growing::Region_Growing(Mat *src):src_rgb_img(src)
 /* ************************************ */
 void Region_Growing::merge_regions(int r1_ind, int r2_ind)
 {
-    *region_list[r1_ind] += *region_list[r2_ind];
-    delete_region(r2_ind);    
+    if(r1_ind > region_list.size() || r2_ind > region_list.size())
+        cout << "bad access merge regions func" << endl;
+    else
+    {
+        *region_list[r1_ind] += *region_list[r2_ind];
+        delete_region(r2_ind);
+    }
 }
 
 /* ********************************************** */
@@ -48,6 +54,7 @@ void Region_Growing::rand_num(float p, set<int>& rand_set)
     }
    
 }
+
 
 /* ************************************************************************ */
 /* initialization for the RG algorithm when not using superpixels           */
@@ -103,7 +110,10 @@ void Region_Growing::slic_wrapper()
     //number of superpixel is not excatly known before SLIC execution. Therefore the variable
     //slic_buffer is used. Here the empty and not needed regions are deleted
     while(r_size(region_list.size() - 1) == 0)
+    {
+        delete region_list[region_list.size()-1];
         region_list.erase(region_list.end()-1);
+    }
     
     //initialize region_num_img
     region_num_img = Mat::zeros(src_rgb_img->rows,src_rgb_img->cols, CV_32FC1);
@@ -136,34 +146,47 @@ void Region_Growing::perform()
 {
     slic_wrapper();
     set<int> rand_set;
-    float p = 0.20;
+    float p = 0.2;
+    unsigned long temp, sat_count = 0;
+
     
-    rand_num(p, rand_set);
-    for(set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
+    cout << "Start region growing"<< endl;
+    
+    while(sat_count != 30 && region_list.size() > 10)
     {
-        for(int i = *it+1; i != *it; i++)
+        rand_num(p, rand_set);
+        temp = region_list.size();
+        for(set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
         {
-            i == region_list.size() - 1? i = 0 : i=i;
-            if(region_list[*it]->is_adjacent(region_list[i], &region_num_img))
+            if(*it < region_list.size() -1 )
             {
-                double diff_stddev = abs(region_list[*it]->getStdDev() - region_list[i]->getStdDev());
-                double diff_mean = region_list[*it]->getMean() - region_list[i]->getMean();
-                //double arr =
-                bool can_be_merged=true;
-                if(can_be_merged) //to implement: respond of ML module
+                for(int i = *it+1; i != *it; i++)
                 {
-                    merge_regions(*it, i);
-                    if( rand_set.find(i) != rand_set.end()) //check if merged region is in random list. If yes, delete element
-                        rand_set.erase (i);
-                    update_reg_num_image(*it);
-                    
+                    i == region_list.size() - 1? i = 0 : i=i;
+                    //check_max_rand_set((int)region_list.size()-1, rand_set);
+                   // cout << "WHILE ITERATION STOPPED it:"<< *it << " " << region_list.size() <<endl;
+                    if(i >= region_list.size())
+                        cout << "bad access" << endl;
+                    if(region_list[*it]->is_adjacent(region_list[i], &region_num_img))
+                    {
+                        double diff_stddev = abs(region_list[*it]->getStdDev() - region_list[i]->getStdDev());
+                        double diff_mean = region_list[*it]->getMean() - region_list[i]->getMean();
+                        //double arr =
+                        bool can_be_merged=true;
+                        if(can_be_merged) //to implement: respond of ML module
+                        {
+                            merge_regions(*it, i);
+                            update_reg_num_image(*it);
+                            break;
+                        }
+                    }
                 }
-                
             }
-                
-            //TO CHECK
-            
+   
         }
+        if( temp == region_list.size() )
+            sat_count++;
+    }
         //region_num_img[*it]
         //region_num_img[*it] find adjacent region -
         //check if region is in rand_set: if yes, delete it
@@ -171,7 +194,7 @@ void Region_Growing::perform()
         //compute diff stdDev
         //compute diff arrangement
         
-    }
+    
 }
 
 
@@ -224,4 +247,42 @@ void Region_Growing::display_contours()
     
     imshow("out", out_img);
     cvWaitKey();
+}
+
+
+/* *********************************************** */
+/* for testing                                     */
+/* *********************************************** */
+void Region_Growing::save_contours(int c)
+{
+    out_img = src_rgb_img->clone();
+    string s = "image_"+std::to_string(c)+".jpg";
+    //compute column differences
+    for(int r=0; r < src_rgb_img->rows; r++){
+        for(int c = 0; c < src_rgb_img->cols -1; c++){
+            Point current(c,r);
+            Point neigh(c+1,r);
+            if(region_num_img.at<float>(current) != region_num_img.at<float>(neigh))
+            {
+                out_img.at<cv::Vec3b>(current)[0] = 0;
+                out_img.at<cv::Vec3b>(current)[1] = 0;
+                out_img.at<cv::Vec3b>(current)[2] = 255;
+            }
+        }
+    }
+    //compute row differences
+    for(int c=0; c < src_rgb_img->cols; c++){
+        for(int r = 0; r < src_rgb_img->rows -1; r++){
+            Point current(c,r);
+            Point neigh(c,r+1);
+            if(region_num_img.at<float>(current) != region_num_img.at<float>(neigh))
+            {
+                out_img.at<cv::Vec3b>(current)[0] = 0;
+                out_img.at<cv::Vec3b>(current)[1] = 0;
+                out_img.at<cv::Vec3b>(current)[2] = 255;
+            }
+        }
+    }
+    
+    imwrite(s, out_img);
 }
