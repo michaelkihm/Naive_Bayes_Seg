@@ -10,12 +10,20 @@
 #include <opencv2/opencv.hpp>
 #include "Region_module/Region.hpp"
 #include "Region_Growing.hpp"
+#include "ML_module/Stat.h"
 #include <list>
 #include <set>
 #include <math.h>
 #include <time.h>       /* time */
 #include <stdlib.h>     /* srand, rand */
+
 #include <string>
+
+#include <sstream>
+#include <fstream>
+
+#include "Training.hpp"
+
 
 
 int main(int argc, const char * argv[]) {
@@ -27,7 +35,7 @@ int main(int argc, const char * argv[]) {
    
     Point p(12,3), p1(12,4), p3(12,5), p4(12,6), p5(12,7);
     Point p21(13,3), p22(13,4), p23(13,5), p24(13,6), p25(13,7);
-    
+ 
     
     //gray.at<uchar>(p) = 40;
     //gray.at<uchar>(p1) = 50;
@@ -95,15 +103,80 @@ int main(int argc, const char * argv[]) {
     }
     cout << "\n--------------------------------" << endl;
     
+ 
     
-    //return 0;
+    string path = "/Users/michaelkihm/Desktop/train_data/human/color/1105/8049.seg";
     
+    
+    //GotoLine(input, 8);
 
+    
+   // int rows = get_row_or_col(input, 5);
+    
+    //string s;
+    /*
+    for (int i = 0; i <= 4; i++)
+    {
+        std::getline(input, s);
+    }
+    
+    cout << s << endl;
+    int word = s.find(" ");
+    string strNew = s.substr(word+1,s.back());
+    cols = stoi(strNew);
+     */
+
+    /*
+    for( std::string line; getline( input, line ); )
+    {
+        cout << line << endl;
+    }
+    */
+   cout << "\n--------------------------------" << endl;
+
+    fstream f( path);
+    string input;
+    getline(f,input);getline(f,input);getline(f,input);getline(f,input); //ignore first lines
+    
+    
+    int cols,rows,row,col1,col2, segments;
+ 
+    f>>input;
+    f>>cols;
+    f>>input;
+    f>>rows;
+    f>>input;
+    f>>segments;
+    f.ignore();
+    getline(f,input);getline(f,input);getline(f,input);getline(f,input); //ignore next 4 lines
+    Mat *region_image = new Mat(rows, cols, CV_32F);
+    int region;
+    while(!f.eof()){
+        f>>region;
+        f>>row;
+        f>>col1;
+        f>>col2;
+        for(int i=col1;i<=col2;i++)
+            region_image->at<float>(row,i) = region;
+    }
+    f.close();
+    
+    string p2 = "/Users/michaelkihm/Desktop/BSDS300/images/train/8049.jpg";
+    Training test123;
+    test123.init(p2,path);
+    
+    
+    return 0;
+  
+    
     Region_Growing test_ini(&test);
     test_ini.perform();
     test_ini.display_contours();
     cout <<" \nsize reg list: " << test_ini.size() << endl;
     return 0;
 }
+
+
+
 
 

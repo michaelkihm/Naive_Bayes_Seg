@@ -10,6 +10,7 @@
 		C40E156120DAFCB600658B2E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40E156020DAFCB600658B2E /* main.cpp */; };
 		C40E156C20DC20DC00658B2E /* Region.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40E156A20DC20DC00658B2E /* Region.cpp */; };
 		C40E156F20DD4CC300658B2E /* Region_Growing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40E156D20DD4CC300658B2E /* Region_Growing.cpp */; };
+		C464BF9A20ED38CB0075DFAB /* Training.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C464BF9820ED38CB0075DFAB /* Training.cpp */; };
 		C4B979E220E42B8D00E9709E /* slic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4B979E120E42B8D00E9709E /* slic.cpp */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +33,9 @@
 		C40E156B20DC20DC00658B2E /* Region.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Region.hpp; sourceTree = "<group>"; };
 		C40E156D20DD4CC300658B2E /* Region_Growing.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Region_Growing.cpp; sourceTree = "<group>"; };
 		C40E156E20DD4CC300658B2E /* Region_Growing.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Region_Growing.hpp; sourceTree = "<group>"; };
+		C464BF9820ED38CB0075DFAB /* Training.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Training.cpp; sourceTree = "<group>"; };
+		C464BF9920ED38CB0075DFAB /* Training.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Training.hpp; sourceTree = "<group>"; };
+		C464BF9D20ED3BBF0075DFAB /* Stat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stat.h; sourceTree = "<group>"; };
 		C4B979E020E42B8D00E9709E /* slic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = slic.h; sourceTree = "<group>"; };
 		C4B979E120E42B8D00E9709E /* slic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = slic.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,6 +101,9 @@
 		C40E156920DC203500658B2E /* ML_module */ = {
 			isa = PBXGroup;
 			children = (
+				C464BF9820ED38CB0075DFAB /* Training.cpp */,
+				C464BF9920ED38CB0075DFAB /* Training.hpp */,
+				C464BF9D20ED3BBF0075DFAB /* Stat.h */,
 			);
 			path = ML_module;
 			sourceTree = "<group>";
@@ -157,6 +164,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C464BF9A20ED38CB0075DFAB /* Training.cpp in Sources */,
 				C4B979E220E42B8D00E9709E /* slic.cpp in Sources */,
 				C40E156120DAFCB600658B2E /* main.cpp in Sources */,
 				C40E156F20DD4CC300658B2E /* Region_Growing.cpp in Sources */,

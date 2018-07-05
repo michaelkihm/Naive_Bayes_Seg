@@ -146,13 +146,13 @@ void Region_Growing::perform()
 {
     slic_wrapper();
     set<int> rand_set;
-    float p = 0.2;
+    float p = 0.2, max_regions = 3;
     unsigned long temp, sat_count = 0;
 
     
     cout << "Start region growing"<< endl;
     
-    while(sat_count != 30 && region_list.size() > 10)
+    while(sat_count != 30 && region_list.size() > max_regions)
     {
         rand_num(p, rand_set);
         temp = region_list.size();
@@ -162,9 +162,7 @@ void Region_Growing::perform()
             {
                 for(int i = *it+1; i != *it; i++)
                 {
-                    i == region_list.size() - 1? i = 0 : i=i;
-                    //check_max_rand_set((int)region_list.size()-1, rand_set);
-                   // cout << "WHILE ITERATION STOPPED it:"<< *it << " " << region_list.size() <<endl;
+                    i == region_list.size() - 1? i = 0 : i=i; //circular iteration for loop
                     if(i >= region_list.size())
                         cout << "bad access" << endl;
                     if(region_list[*it]->is_adjacent(region_list[i], &region_num_img))
@@ -187,13 +185,6 @@ void Region_Growing::perform()
         if( temp == region_list.size() )
             sat_count++;
     }
-        //region_num_img[*it]
-        //region_num_img[*it] find adjacent region -
-        //check if region is in rand_set: if yes, delete it
-        //compute diff colour
-        //compute diff stdDev
-        //compute diff arrangement
-        
     
 }
 
