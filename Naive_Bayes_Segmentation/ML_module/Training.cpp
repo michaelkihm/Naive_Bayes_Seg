@@ -8,6 +8,11 @@
 
 #include "Training.hpp"
 
+
+/* *************************************************************** */
+/* read ground truth .seg file and read the corresponding          */
+/* ground truth jpg image                                          */
+/* *************************************************************** */
 void Training::init(string & image_path, string& seg_file_path)
 {
    
@@ -43,6 +48,7 @@ void Training::init(string & image_path, string& seg_file_path)
     Mat* ground_img = new Mat;
     *ground_img = imread(image_path);
     
+    //------------------------------------//
     //init region vector
     for(int i=0; i < segments; i++)
         region_vector.push_back(new Region);

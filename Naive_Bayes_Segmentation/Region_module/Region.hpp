@@ -19,7 +19,6 @@ using namespace std;
 using namespace cv;
 
 
-
 class Region
 {
 private:
@@ -32,6 +31,7 @@ private:
     double StdDev; //standard deviation as texture descriptor
     double Mean;  //gray scale mean for color descriptor
     unsigned long Size; //region size
+    bool check_neighborhood_NOT(Point p, float v, Mat* region_num_img);
     bool check_neighborhood(Point p, float v, Mat* region_num_img);
     bool is_pixel_valid(int r, int c, int rows, int cols);
     
@@ -49,14 +49,14 @@ public:
     unsigned long getSize()  { return Reg_vector.size(); }
     double getMean();  //method for mean gray color
     double getStdDev();//method for standard deviaton (used as texture descr)
-    double compArr(Region* r1, Region* r2); //TO DO
+    double compArr(Region* r, Mat *region_num_image);
     float getRegionNr(Mat *region_num_img);
     
     
     bool is_adjacent(Region *r, Mat* region_num_img);
     void compute_boundary(Mat* region_num_image);
-    
-    
+    unsigned long get_boundary_size() const { return Reg_boundary.size(); }
+  
     friend class Region_Growing;
     
     //overloaded operators

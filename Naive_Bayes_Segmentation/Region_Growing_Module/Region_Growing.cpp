@@ -140,19 +140,19 @@ void Region_Growing::update_reg_num_image(int i)
 
 
 /* ****************************************** */
-/* execute the region growing algorithm       */
+/* executes the region growing algorithm       */
 /* ****************************************** */
 void Region_Growing::perform()
 {
     slic_wrapper();
     set<int> rand_set;
-    float p = 0.2, max_regions = 3;
+    float p = 0.3, max_regions = 1;
     unsigned long temp, sat_count = 0;
 
     
     cout << "Start region growing"<< endl;
     
-    while(sat_count != 30 && region_list.size() > max_regions)
+    while(sat_count != 30 /*&& region_list.size() > max_regions*/)
     {
         rand_num(p, rand_set);
         temp = region_list.size();
@@ -169,7 +169,8 @@ void Region_Growing::perform()
                     {
                         double diff_stddev = abs(region_list[*it]->getStdDev() - region_list[i]->getStdDev());
                         double diff_mean = region_list[*it]->getMean() - region_list[i]->getMean();
-                        //double arr =
+                        double diff_size = region_list[*it]->getSize() - region_list[i]->getSize();
+                        double arr = region_list[*it]->compArr(region_list[i], &region_num_img);
                         bool can_be_merged=true;
                         if(can_be_merged) //to implement: respond of ML module
                         {

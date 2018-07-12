@@ -16,8 +16,9 @@ struct Stat
     const double arr;
     const double color;
     const double text;
+    const int    size;
     const bool    bmerged;
     
-    Stat( double _arr, double _color, double _text, bool _bmerged):arr(_arr),color(_color),text(_text),bmerged(_bmerged) { }
+    Stat( double _arr, double _color, double _text, int _size, bool _bmerged):arr(_arr),color(_color),text(_text),size(_size),bmerged(_bmerged) { }
 };
 #endif /* Stat_h */

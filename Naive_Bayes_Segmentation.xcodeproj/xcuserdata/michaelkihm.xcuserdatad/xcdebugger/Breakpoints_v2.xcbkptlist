@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Naive_Bayes_Segmentation/Region_Growing_Module/Region_Growing.cpp"
-            timestampString = "552509923.046087"
+            timestampString = "553120659.53474"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
             landmarkName = "Region_Growing::display_contours()"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Naive_Bayes_Segmentation/Region_Growing_Module/Region_Growing.cpp"
-            timestampString = "552509923.046243"
+            timestampString = "553120659.53523"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "Region_Growing::display_contours()"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Naive_Bayes_Segmentation/Region_Growing_Module/Region_Growing.cpp"
-            timestampString = "552509923.0463639"
+            timestampString = "553120659.535724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "149"
@@ -58,7 +58,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Naive_Bayes_Segmentation/main.cpp"
-            timestampString = "552510357.7007951"
+            timestampString = "553120659.536188"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "138"
@@ -74,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Naive_Bayes_Segmentation/main.cpp"
-            timestampString = "552510357.700933"
+            timestampString = "553120659.536289"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "150"
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Naive_Bayes_Segmentation/main.cpp"
-            timestampString = "552510357.701236"
+            timestampString = "553120659.536382"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "163"
@@ -106,7 +106,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Naive_Bayes_Segmentation/main.cpp"
-            timestampString = "552510357.701411"
+            timestampString = "553120659.536467"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "162"
@@ -122,12 +122,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Naive_Bayes_Segmentation/ML_module/Training.cpp"
-            timestampString = "552510357.7015851"
+            timestampString = "553120659.536567"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
             landmarkName = "Training::init(string &amp; image_path, string&amp; seg_file_path)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Naive_Bayes_Segmentation/Region_module/Region.cpp"
+            timestampString = "553120659.5366631"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "Region::compArr(Region* r, Mat *region_num_image)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
