@@ -27,8 +27,8 @@
 
 
 int main(int argc, const char * argv[]) {
-    Mat test = imread("/Users/michaelkihm/Documents/CV_projects/final HTCV/Training/12003.jpg");//dog.png" 6.2
-    //Mat test = imread("dog.png");//dog.png" 6.2
+    //Mat test = imread("/Users/michaelkihm/Documents/CV_projects/final HTCV/Training/12003.jpg");//dog.png" 6.2
+    Mat test = imread("dog.png");//dog.png" 6.2
     Mat gray;
     cvtColor(test, gray, CV_RGB2GRAY);
     
