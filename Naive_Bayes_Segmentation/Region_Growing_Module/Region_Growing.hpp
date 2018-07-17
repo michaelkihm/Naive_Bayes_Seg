@@ -17,7 +17,7 @@
 
 class Region_Growing
 {
-private:
+protected:
     //data
     Mat *src_rgb_img;
     Mat src_gray_img;
@@ -25,7 +25,6 @@ private:
     Mat out_img; //image to show segmentation result
     vector<Region*> region_list; //vector of pointer to regions
     //list<Region*> region_list;
- 
     
     //methods
     //void push_back(Region *r) { region_list.push_back(r); }
@@ -34,7 +33,7 @@ private:
     //void initialize();
 public:
     Region_Growing(Mat *src);
-    Region_Growing() = delete;
+    Region_Growing()  = delete;
     unsigned long  size() const { return region_list.size(); }
     /*void disp() {imshow("test rgb", *src_rgb_img);cvWaitKey();
         imshow("test gray", src_gray_img);

@@ -162,8 +162,8 @@ int main(int argc, const char * argv[]) {
     f.close();
     
     string p2 = "/Users/michaelkihm/Desktop/BSDS300/images/train/8049.jpg";
-    Training test123;
-    test123.init(p2,path);
+    //Training test123;
+    //test123.init(p2,path);
     
     
   

@@ -51,7 +51,7 @@ public:
     double getStdDev();//method for standard deviaton (used as texture descr)
     double compArr(Region* r, Mat *region_num_image);
     float getRegionNr(Mat *region_num_img);
-    
+    list<Point> *getRegList() {return &Reg_vector; }
     
     bool is_adjacent(Region *r, Mat* region_num_img);
     void compute_boundary(Mat* region_num_image);

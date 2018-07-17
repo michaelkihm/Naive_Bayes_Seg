@@ -163,7 +163,7 @@ void Region_Growing::perform()
                 for(int i = *it+1; i != *it; i++)
                 {
                     i >= region_list.size() - 1? i = 0 : i=i; //circular iteration for loop
-                    if(*it == i) break;
+                    if(*it == i) break; //assure that region does not check itself
                     if(region_list[*it]->is_adjacent(region_list[i], &region_num_img))
                     {
                       
