@@ -105,7 +105,7 @@ int main(int argc, const char * argv[]) {
     
  
     
-    string path = "/Users/michaelkihm/Desktop/train_data/human/color/1105/8049.seg";
+    
     
     
     //GotoLine(input, 8);
@@ -134,45 +134,22 @@ int main(int argc, const char * argv[]) {
     */
    cout << "\n--------------------------------" << endl;
 
-    fstream f( path);
-    string input;
-    getline(f,input);getline(f,input);getline(f,input);getline(f,input); //ignore first lines
-    
-    
-    int cols,rows,row,col1,col2, segments;
- 
-    f>>input;
-    f>>cols;
-    f>>input;
-    f>>rows;
-    f>>input;
-    f>>segments;
-    f.ignore();
-    getline(f,input);getline(f,input);getline(f,input);getline(f,input); //ignore next 4 lines
-    Mat *region_image = new Mat(rows, cols, CV_32F);
-    int region;
-    while(!f.eof()){
-        f>>region;
-        f>>row;
-        f>>col1;
-        f>>col2;
-        for(int i=col1;i<=col2;i++)
-            region_image->at<float>(row,i) = region;
-    }
-    f.close();
-    
-    string p2 = "/Users/michaelkihm/Desktop/BSDS300/images/train/8049.jpg";
+
+    string path = "/Users/michaelkihm/Desktop/train_data/human/color/1108/286092.seg";
+    string p2 = "/Users/michaelkihm/Desktop/BSDS300/images/train/286092.jpg";
+    Mat test_train = imread(p2);
     //Training test123;
-    //test123.init(p2,path);
     
+    Training coach(p2, path, &test_train);
+    coach.train();
     
   
   
     
-    Region_Growing test_ini(&test);
-    test_ini.perform();
-    test_ini.display_contours();
-    cout <<" \nsize reg list: " << test_ini.size() << endl;
+    //Region_Growing test_ini(&test);
+    //test_ini.perform();
+    //test_ini.display_contours();
+    //cout <<" \nsize reg list: " << test_ini.size() << endl;
     return 0;
 }
 

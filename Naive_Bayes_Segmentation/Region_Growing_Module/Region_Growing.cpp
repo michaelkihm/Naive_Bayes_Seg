@@ -40,7 +40,7 @@ void Region_Growing::merge_regions(int r1_ind, int r2_ind)
 /* ********************************************** */
 /* create random numbers to select region         */
 /* ********************************************** */
-void Region_Growing::rand_num(float p, set<int>& rand_set)
+void Region_Growing::rand_num(float p, unordered_set<int>& rand_set)
 {
     rand_set.clear();
     srand (time(NULL));
@@ -145,7 +145,7 @@ void Region_Growing::update_reg_num_image(int i)
 void Region_Growing::perform()
 {
     slic_wrapper();
-    set<int> rand_set;
+    unordered_set<int> rand_set;
     float p = 0.3;//, max_regions = 1;
     unsigned long temp, sat_count = 0;
  
@@ -156,7 +156,7 @@ void Region_Growing::perform()
     {
         rand_num(p, rand_set);
         temp = region_list.size();
-        for(set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
+        for(unordered_set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
         {
             if(*it < region_list.size() /*-1*/ )
             {

@@ -10,7 +10,7 @@
 #define Region_Growing_hpp
 
 #include <stdio.h>
-#include <set>
+#include <unordered_set>
 #include "../Region_module/Region.hpp"
 #include "slic.h"
 
@@ -47,7 +47,7 @@ public:
     void merge_regions(int r1_ind, int r2_ind);//for testing in public
     void init();//for testing in public
     void draw_output();//for testing in public
-    void rand_num(float p, set<int>& rand_set);//for testing in public
+    void rand_num(float p, unordered_set<int>& rand_set);//for testing in public
     void update_reg_num_image(int i); //for testing in public
     
     void slic_wrapper();

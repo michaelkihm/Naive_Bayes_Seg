@@ -7,6 +7,7 @@
 //
 
 #include "Training.hpp"
+#include <set>
 
 
 /* *************************************************************** */
@@ -22,7 +23,7 @@ void Training::init()
     getline(f,input);getline(f,input);getline(f,input);getline(f,input); //ignore first lines
     
     
-    int cols,rows,row,col1,col2, segments;
+    int cols,rows,row,col1,col2;
     
     f>>input;
     f>>cols;
@@ -67,28 +68,35 @@ void Training::init()
 void Training::train()
 {
     
-    set<int> rand_set;
+    unordered_set<int> rand_set;
     float p = 0.3;
     unsigned long temp, sat_count = 0;
-    bool bmerged = false;
+    int bmerged;
+    double diff_stddev, diff_mean, arr;
+    unsigned long diff_size;
+    ofstream outfile;
+    outfile.open("test.txt", std::ios_base::app);
     
     //------------------------------------//
     //call slic wrapper
     slic_wrapper();
     
     //------------------------------------//
-    //init method
+    //init ground truth data
     init();
     
     //------------------------------------//
     //start training
-    while(sat_count != 300 /*&& region_list.size() > max_regions*/)
+    cout << segments << endl;
+    while(/*sat_count != 3000*/region_list.size() >= segments)
     {
         rand_num(p, rand_set);
+        bmerged = 0;
         temp = region_list.size();
-        for(set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
+        cout << region_list.size() << endl;
+        for(unordered_set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
         {
-            if(*it < region_list.size() /*-1*/ )
+            if(*it < region_list.size() && bmerged < 3)
             {
                 for(int i = *it+1; i != *it; i++)
                 {
@@ -97,25 +105,32 @@ void Training::train()
                     if(region_list[*it]->is_adjacent(region_list[i], &region_num_img))
                     {
                         
-                        double diff_stddev  = abs(region_list[*it]->getStdDev() - region_list[i]->getStdDev());
-                        double diff_mean    = region_list[*it]->getMean() - region_list[i]->getMean();
-                        double diff_size    = region_list[*it]->getSize() - region_list[i]->getSize();
-                        double arr          = region_list[*it]->compArr(region_list[i], &region_num_img);
+                        diff_stddev  = abs( region_list[*it]->getStdDev() - region_list[i]->getStdDev() );
+                        diff_mean    = abs( region_list[*it]->getMean() - region_list[i]->getMean() );
+                        diff_size    = ( region_list[*it]->getSize() - region_list[i]->getSize() );
+                        arr          = region_list[*it]->compArr(region_list[i], &region_num_img);
                         
                         if( bcan_be_merged(*it, i) ) //to implement
                         {
+                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 1 << endl;//save result for trainings data
                             merge_regions(*it,i);
                             update_reg_num_image(*it);
-                            bmerged = true; //used to only merge one region pair of each rand vector
+                            bmerged++; //used to only merge one region pair of each rand vector
                             break;
+                        }
+                        else
+                        {
+                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 0 << endl;//save result for trainings data
                         }
                     }
                 }
             }
         }
-        if( temp == region_list.size() )
-            sat_count++;
     }
+    display_contours();
+    save_contours(0);
+    delete gt_reg_num_image;
+    cout << "region_list size "<<region_list.size() <<" segments: "<<segments<< endl;
     cout << "Finished training" <<endl;
 }
 
@@ -125,12 +140,13 @@ void Training::train()
 /* ********************************************* */
 bool Training::bcan_be_merged(int r1, int r2)
 {
-    return find_majority_element(r1) == find_majority_element(r2) ? true : false;
+    //return find_majority_element(r1) == find_majority_element(r2) ? true : false;
+    return find_majority_element(r1) && find_majority_element(r2) ? true : false;
 }
 
 
 /* ********************************************************************************* */
-/* First step uses Moore’s Voting Algorithm to get a candidate for majority element. */
+/*  Moore’s Voting Algorithm to get a candidate for majority element.                */
 /* ********************************************************************************* */
 int Training::find_majority_element(int r_index)
 {
@@ -140,7 +156,7 @@ int Training::find_majority_element(int r_index)
      for(list<Point>::iterator it = reg_list->begin(); it != reg_list->end(); ++it)
          v.push_back((int)gt_reg_num_image->at<float>(*it));
     
-    
+  
     //find majority element of vector v
     int maj_index = 0, count = 1;
     for (int i = 1; i < v.size(); i++)
@@ -156,4 +172,5 @@ int Training::find_majority_element(int r_index)
         }
     }
     return v[maj_index];
+   
 }
