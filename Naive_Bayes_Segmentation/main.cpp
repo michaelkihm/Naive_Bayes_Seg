@@ -140,16 +140,16 @@ int main(int argc, const char * argv[]) {
     Mat test_train = imread(p2);
     //Training test123;
     
-    Training coach(p2, path, &test_train);
-    coach.train();
+    //Training coach(p2, path, &test_train);
+    //coach.train();
     
   
   
     
-    //Region_Growing test_ini(&test);
-    //test_ini.perform();
-    //test_ini.display_contours();
-    //cout <<" \nsize reg list: " << test_ini.size() << endl;
+    Region_Growing test_ini(&test);
+    test_ini.perform();
+    test_ini.display_contours();
+    cout <<" \nsize reg list: " << test_ini.size() << endl;
     return 0;
 }
 

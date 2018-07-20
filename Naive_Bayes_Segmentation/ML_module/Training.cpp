@@ -112,7 +112,7 @@ void Training::train()
                         
                         if( bcan_be_merged(*it, i) ) //to implement
                         {
-                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 1 << endl;//save result for trainings data
+                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<fabs(diff_size)<<" "<<arr<<" "<< 1 << endl;//save result for trainings data
                             merge_regions(*it,i);
                             update_reg_num_image(*it);
                             bmerged++; //used to only merge one region pair of each rand vector
@@ -120,7 +120,7 @@ void Training::train()
                         }
                         else
                         {
-                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 0 << endl;//save result for trainings data
+                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<fabs(diff_size)<<" "<<arr<<" "<< 0 << endl;//save result for trainings data
                         }
                     }
                 }
@@ -140,8 +140,8 @@ void Training::train()
 /* ********************************************* */
 bool Training::bcan_be_merged(int r1, int r2)
 {
-    //return find_majority_element(r1) == find_majority_element(r2) ? true : false;
-    return find_majority_element(r1) && find_majority_element(r2) ? true : false;
+    return find_majority_element(r1) == find_majority_element(r2) ? true : false;
+    //return find_majority_element(r1) && find_majority_element(r2) ? true : false;
 }
 
 
