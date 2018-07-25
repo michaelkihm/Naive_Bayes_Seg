@@ -35,6 +35,7 @@ void Region_Growing::merge_regions(int r1_ind, int r2_ind)
         *region_list[r1_ind] += *region_list[r2_ind];
         delete_region(r2_ind);
     }
+
 }
 
 /* ********************************************** */
@@ -44,10 +45,9 @@ void Region_Growing::rand_num(float p, unordered_set<int>& rand_set)
 {
     rand_set.clear();
     srand (time(NULL));
-    float prob=0.15;
     int size = (int)region_list.size(), rand_n;
     //std::set<int> rand_set;
-    while (rand_set.size() < ceil(prob*size))
+    while (rand_set.size() < ceil(p*size))
     {
         rand_n = rand() % size;         // rand_n in the range 0 to size-1
         rand_set.insert(rand_n);
@@ -67,7 +67,7 @@ void Region_Growing::init()
     for(int r=0; r < src_rgb_img->rows; r++ ){
         for(int c=0; c < src_rgb_img->cols; c++ )
         {
-            region_list.push_back(new Region);
+            region_list.push_back(unique_ptr<Region>(new Region));
             Point p = Point(c,r);
             region_list.back()->push_back(p);
             region_num_img.at<float>(r,c) = count;
@@ -93,11 +93,15 @@ void Region_Growing::slic_wrapper()
     Slic slic;
     slic.generate_superpixels(lab_image, step, nc);
     
-    
+    Mat img = src_rgb_img->clone();
+    slic.display_contours(&img,  CV_RGB(255,0,0));
+    imwrite("slic_out.jpg", img);
     for(int i=0; i<nr_superpixels+slic_buffer; i++){
         //Region newRegion(&image);
-        Region* r =new Region;// newRegion(&image,&gray_image);
-        region_list.push_back(r);
+        //Region* r =new Region;// newRegion(&image,&gray_image);
+        //region_list.push_back(new Region);
+        region_list.push_back(unique_ptr<Region>(new Region));
+       
     }
     
     for (int x = 0; x < src_rgb_img->cols; x++) {
@@ -111,7 +115,7 @@ void Region_Growing::slic_wrapper()
     //slic_buffer is used. Here the empty and not needed regions are deleted
     while(r_size(region_list.size() - 1) == 0)
     {
-        delete region_list[region_list.size()-1];
+        //delete region_list[region_list.size()-1];
         region_list.erase(region_list.end()-1);
     }
     
@@ -133,9 +137,14 @@ void Region_Growing::slic_wrapper()
 /* *********************************************** */
 void Region_Growing::update_reg_num_image(int i)
 {
+    if(i < region_list.size())
+    {
     float num = region_list[i]->getRegionNr(&region_num_img);
-     for(std::list<Point>::iterator it = region_list[i]->Reg_vector.begin(); it != region_list[i]->Reg_vector.end(); ++it)
+     for(auto it = region_list[i]->Reg_vector.begin(); it != region_list[i]->Reg_vector.end(); ++it)
          region_num_img.at<float>(*it) = num;
+    }
+    else
+        update_reg_num_image(region_list.size()-1);
 }
 
 
@@ -164,13 +173,13 @@ void Region_Growing::perform()
                 {
                     i >= region_list.size() - 1? i = 0 : i=i; //circular iteration for loop
                     if(*it == i) break; //assure that region does not check itself
-                    if(region_list[*it]->is_adjacent(region_list[i], &region_num_img))
+                    if(region_list[*it]->is_adjacent(*region_list[i], &region_num_img))
                     {
                       
                         double diff_stddev  = abs(region_list[*it]->getStdDev() - region_list[i]->getStdDev());
                         double diff_mean    = region_list[*it]->getMean() - region_list[i]->getMean();
                         double diff_size    = region_list[*it]->getSize() - region_list[i]->getSize();
-                        double arr          = region_list[*it]->compArr(region_list[i], &region_num_img);
+                        double arr          = region_list[*it]->compArr(*region_list[i], &region_num_img);
                         bool can_be_merged=true;
                         if(can_be_merged) //to implement: respond of ML module
                         {
@@ -276,4 +285,15 @@ void Region_Growing::save_contours(int c)
     }
     
     imwrite(s, out_img);
+}
+
+/* *********************************************** */
+/* for testing                                     */
+/* *********************************************** */
+void Region_Growing::writeCSV(string filename, int n,cv::Mat m)
+{
+    string file = filename +"_"+to_string(n)+".csv";
+    ofstream outputFile(file);
+    outputFile << format(m, cv::Formatter::FMT_CSV) << endl;
+    outputFile.close();
 }

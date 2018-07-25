@@ -68,11 +68,13 @@ double Region::getStdDev()
 /* computes the arrangement of two regions to */
 /* each other                                 */
 /* ****************************************** */
-double Region::compArr(Region* r, Mat *region_num_image)
+double Region::compArr(/*Region* */Region& r, Mat *region_num_image)
 {
     compute_boundary(region_num_image);
-    r->compute_boundary(region_num_image);
-    float adj_reg_nr = r->getRegionNr(region_num_image);
+    //r->compute_boundary(region_num_image);
+    r.compute_boundary(region_num_image);
+    //float adj_reg_nr = r->getRegionNr(region_num_image);
+    float adj_reg_nr = r.getRegionNr(region_num_image);
     int adj_pixel = 0;
     
     for(std::list<Point>::iterator it = Reg_boundary.begin(); it != Reg_boundary.end(); ++it)
@@ -80,7 +82,7 @@ double Region::compArr(Region* r, Mat *region_num_image)
         if(check_neighborhood(*it, adj_reg_nr, region_num_image))
             adj_pixel++;
     }
-    double result = adj_pixel/( (float)get_boundary_size()  + (float)r->get_boundary_size());
+    double result = adj_pixel/( (float)get_boundary_size()  + /*(float)r->get_boundary_size()*/(float)r.get_boundary_size());
     if(result > 1 || result <= 0)
         cout << "strange arrangement: " << result << endl;
     return result;
@@ -91,9 +93,10 @@ double Region::compArr(Region* r, Mat *region_num_image)
 /* ************************************ */
 /* checks if two regions are adjacent   */
 /* ************************************ */
-bool Region::is_adjacent(Region *r, Mat* region_num_img)
+bool Region::is_adjacent(/*Region **/ Region& r, Mat* region_num_img)
 {
-    float v = r->getRegionNr(region_num_img);
+    //float v = r->getRegionNr(region_num_img);
+    float v = r.getRegionNr(region_num_img);
     for(list<Point>::iterator it = Reg_vector.begin(); it != Reg_vector.end(); ++it)
         if( check_neighborhood(*it,v,region_num_img) )
             return true;
@@ -126,12 +129,12 @@ bool Region::check_neighborhood_NOT(Point p, float v, Mat* region_num_img)
     
     
     //4 diagonal pixels
-    if(is_pixel_valid(p.y -0, p.x -0, rows, cols))
-        if ( region_num_img->at<float>(p.y -0, p.x -0) != v )
+    if(is_pixel_valid(p.y -1, p.x -1, rows, cols))
+        if ( region_num_img->at<float>(p.y -1, p.x -1) != v )
             return true;
     
-    if(is_pixel_valid(p.y -0, p.x +1, rows, cols))
-        if ( region_num_img->at<float>(p.y -0, p.x +1) != v )
+    if(is_pixel_valid(p.y -1, p.x +1, rows, cols))
+        if ( region_num_img->at<float>(p.y -1, p.x +1) != v )
             return true;
     
     if(is_pixel_valid(p.y +1, p.x -1, rows, cols))
@@ -173,12 +176,12 @@ bool Region::check_neighborhood(Point p, float v, Mat* region_num_img)
     
     
     //4 diagonal pixels
-    if(is_pixel_valid(p.y -0, p.x -0, rows, cols))
-        if ( region_num_img->at<float>(p.y -0, p.x -0) == v )
+    if(is_pixel_valid(p.y -1, p.x -1, rows, cols))
+        if ( region_num_img->at<float>(p.y -1, p.x -1) == v )
             return true;
     
-    if(is_pixel_valid(p.y -0, p.x +1, rows, cols))
-        if ( region_num_img->at<float>(p.y -0, p.x +1) == v )
+    if(is_pixel_valid(p.y -1, p.x +1, rows, cols))
+        if ( region_num_img->at<float>(p.y -1, p.x +1) == v )
             return true;
     
     if(is_pixel_valid(p.y +1, p.x -1, rows, cols))

@@ -27,12 +27,12 @@
 
 
 int main(int argc, const char * argv[]) {
-    //Mat test = imread("/Users/michaelkihm/Documents/CV_projects/final HTCV/Training/12003.jpg");//dog.png" 6.2
-    Mat test = imread("dog.png");//dog.png" 6.2
+    Mat test = imread("/Users/michaelkihm/Documents/CV_projects/final HTCV/Training/12003.jpg");//dog.png" 6.2
+    //Mat test = imread("dog.png");//dog.png" 6.2
     Mat gray;
     cvtColor(test, gray, CV_RGB2GRAY);
     
-   
+   /*
     Point p(12,3), p1(12,4), p3(12,5), p4(12,6), p5(12,7);
     Point p21(13,3), p22(13,4), p23(13,5), p24(13,6), p25(13,7);
  
@@ -135,21 +135,21 @@ int main(int argc, const char * argv[]) {
    cout << "\n--------------------------------" << endl;
 
 
-    string path = "/Users/michaelkihm/Desktop/train_data/human/color/1108/286092.seg";
-    string p2 = "/Users/michaelkihm/Desktop/BSDS300/images/train/286092.jpg";
+    string path = "/Users/michaelkihm/Desktop/train_data/human/color/1108/301007.seg";
+    string p2 = "/Users/michaelkihm/Desktop/BSDS300/images/train/301007.jpg";
     Mat test_train = imread(p2);
     //Training test123;
     
-    //Training coach(p2, path, &test_train);
-    //coach.train();
+    Training coach(p2, path, &test_train);
+    coach.train();
     
   
   
     
-    Region_Growing test_ini(&test);
-    test_ini.perform();
-    test_ini.display_contours();
-    cout <<" \nsize reg list: " << test_ini.size() << endl;
+    //Region_Growing test_ini(&test);
+    //test_ini.perform();
+    //test_ini.display_contours();
+    //cout <<" \nsize reg list: " << test_ini.size() << endl;
     return 0;
 }
 

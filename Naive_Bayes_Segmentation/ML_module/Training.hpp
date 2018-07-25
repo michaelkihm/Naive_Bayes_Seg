@@ -29,7 +29,7 @@ class Training : private Region_Growing
 {
 private:
     vector<Stat> train_data;
-    vector<Region*> gt_region_vector;
+    vector<unique_ptr<Region> > gt_region_vector;
     string image_path;
     string seg_file_path;
     Mat *gt_reg_num_image;
@@ -46,7 +46,7 @@ public:
     void save_train_data(); //to be implemented
     bool bcan_be_merged(int r1, int r2);
     int  find_majority_element(/*vector<int> v, */int r_index);
-    
+
 };
 
 

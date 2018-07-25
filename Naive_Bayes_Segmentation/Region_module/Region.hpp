@@ -13,6 +13,7 @@
 #include <opencv2/opencv.hpp>
 #include <cmath>
 #include <list>
+#include <memory>
 
 
 using namespace std;
@@ -46,25 +47,28 @@ public:
     void push_back(Point pix) { Reg_vector.push_back(pix); }
     void push_back_boundary(Point pix) { Reg_boundary.push_back(pix); }
     
-    unsigned long getSize()  { return Reg_vector.size(); }
+    int getSize()  { return (int)Reg_vector.size(); }
     double getMean();  //method for mean gray color
     double getStdDev();//method for standard deviaton (used as texture descr)
-    double compArr(Region* r, Mat *region_num_image);
+    double compArr(/*Region**/Region& r, Mat *region_num_image);
     float getRegionNr(Mat *region_num_img);
     list<Point> *getRegList() {return &Reg_vector; }
     
-    bool is_adjacent(Region *r, Mat* region_num_img);
+    bool is_adjacent(/*Region *r*/Region& r, Mat* region_num_img);
     void compute_boundary(Mat* region_num_image);
     unsigned long get_boundary_size() const { return Reg_boundary.size(); }
   
     friend class Region_Growing;
+    friend class Training;//??
     
     //overloaded operators
     Region &operator+=( Region& r)
     {
+        int s1 = r.Reg_vector.size(), s2= Reg_vector.size();
         Reg_vector.splice(Reg_vector.begin(), r.Reg_vector); //splices r in front of Reg_vector
         //Reg_boundary.splice(Reg_boundary.begin(), r.Reg_boundary); //splices r in front of Reg_vector
-        
+        if((s1+s2) != Reg_vector.size())
+            cout << "merge did not work"<< endl;
         return *this;
         
     }
