@@ -33,7 +33,7 @@ void Training::init()
     f>>segments;
     f.ignore();
     getline(f,input);getline(f,input);getline(f,input);getline(f,input); //ignore next 4 lines
-    gt_reg_num_image = new Mat(rows, cols, CV_32F);
+    gt_reg_num_image = new Mat(rows, cols, CV_32FC1);
     float region;
     while(!f.eof()){
         f>>region;

@@ -125,9 +125,9 @@ void Region_Growing::slic_wrapper()
         for (int r = 0; r < region_num_img.rows; r++)
             region_num_img.at<float>(r,c) = (float)slic.getCluster(c, r);
     
-
+    
         
-
+    writeCSV("first_reg_img" , 0, region_num_img);
     delete lab_image;
     cout << "Finished generating SLIC superpixel" << endl;
 }
