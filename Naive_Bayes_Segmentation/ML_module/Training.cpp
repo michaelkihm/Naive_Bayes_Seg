@@ -63,7 +63,7 @@ void Training::init()
     Mat out_img = src_rgb_img->clone();
     
     
-    /*
+    
     //compute column differences
     for(int r=0; r < src_rgb_img->rows; r++){
         for(int c = 0; c < src_rgb_img->cols -1; c++){
@@ -90,22 +90,8 @@ void Training::init()
             }
         }
     }
-    */
+    
  
-        
-    
-
-    
-    for(int i=0; i < gt_region_vector.size(); i++)
-    {
-        gt_region_vector[i]->compute_boundary(gt_reg_num_image);
-        for(auto it = gt_region_vector[i]->Reg_boundary.begin(); it != gt_region_vector[i]->Reg_boundary.end(); ++it)
-        {
-            out_img.at<cv::Vec3b>(*it)[0] = 0;
-            out_img.at<cv::Vec3b>(*it)[1] = 0;
-            out_img.at<cv::Vec3b>(*it)[2] = 255;
-        }
-    }
     imwrite("gt_img.jpg", out_img);
    
     
@@ -122,15 +108,15 @@ void Training::train()
 {
     
     unordered_set<int> rand_set;
-    float p = 0.5;
+    float p = 0.10;
     unsigned long temp, sat_count = 0;
     int bmerged;
     double diff_stddev, diff_mean, arr;
     int diff_size;
     ofstream outfile;
     outfile.open("test.txt", std::ios_base::app);
+    //int c=0;
     
-    int c=0;
     //------------------------------------//
     //call slic wrapper
     slic_wrapper();
@@ -141,19 +127,21 @@ void Training::train()
     
     //------------------------------------//
     //start training
-    cout << segments << endl;
-    while(/*sat_count != 3000*/region_list.size() >= segments)
+    string s = "Start training image ";// + ;
+    cout << s << endl;
+    while(sat_count < 150 && region_list.size() >= segments+1)
     {
-        if(region_list.size() > 560)
-            rand_num(p, rand_set);
-        else
-            rand_num(1, rand_set);
+        //if(region_list.size() > 560)
+        rand_num(p, rand_set);
+       // else
+         //   rand_num(1, rand_set);
+       
         bmerged = 0;
         temp = region_list.size();
         cout << region_list.size() << endl;
         for(unordered_set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
         {
-            if(*it < region_list.size() && bmerged < 50)
+            if(*it < region_list.size() && bmerged < 4)
             {
                 for(int i = *it+1; i != *it; i++)
                 {
@@ -184,21 +172,22 @@ void Training::train()
                 }
             }
         }
-        if(c==5)
-        {
-            save_contours(sat_count+=1);
-            writeCSV("gt_img", sat_count,*gt_reg_num_image);
-            writeCSV("reg_img" , sat_count, region_num_img);
-            c=0;
-        }
-        c+=1;
+        if( temp == region_list.size() )
+            sat_count++;
+        //if(c==5)
+        //{
+         //   save_contours(sat_count+=1);
+          //  c=0;
+        //}
+        //c+=1;
     }
    
-    display_contours();
+    
     save_contours(0);
     delete gt_reg_num_image;
     cout << "region_list size "<<region_list.size() <<" segments: "<<segments<< endl;
     cout << "Finished training" <<endl;
+    display_contours();
 }
 
 
@@ -207,7 +196,7 @@ void Training::train()
 /* ********************************************* */
 bool Training::bcan_be_merged(int r1, int r2)
 {
-    return find_majority_element(r1) == find_majority_element(r2) && find_majority_element(r1)!=false && find_majority_element(r2)!=false ? true : false;
+    return find_majority_element(r1) == find_majority_element(r2);// && find_majority_element(r1)!=false && find_majority_element(r2)!=false ? true : false;
     //return find_majority_element(r1) && find_majority_element(r2) ? true : false;
 }
 
@@ -230,16 +219,16 @@ int Training::find_majority_element(int r_index)
             cout << "different numbers inside one region!!"<<endl;
     
 
-    
+   
      for(list<Point>::iterator it = reg_list->begin(); it != reg_list->end(); ++it)
          v.push_back(gt_reg_num_image->at<float>(*it));
-    
+   /*
     for(int i=0; i < v.size()-1; i++)
         if(v[i] != v[i+1])
             return false;
     return v[0];
+ */
 
-/*
     //find majority element of vector v
     int maj_index = 0, count = 1;
     for (int i = 1; i < v.size(); i++)
@@ -254,21 +243,22 @@ int Training::find_majority_element(int r_index)
             count = 1;
         }
     }
-    
+    return v[maj_index];
+   /*
     int cnt =0;
     for (int i = 1; i < v.size(); i++)
         if(v[i]==v[maj_index])
             cnt++;
     if(region_list.size() > 800)
     {
-        if(cnt >= v.size()*0.98)
+        if(cnt >= v.size()*0.7)
             return v[maj_index];
         else
             return false;
     }
     else if(region_list.size() < 800 && region_list.size() > 600)
     {
-        if(cnt >= v.size()*0.8)
+        if(cnt >= v.size()*0.5)
             return v[maj_index];
         else
             return false;
@@ -280,8 +270,8 @@ int Training::find_majority_element(int r_index)
         else
             return false;
     }
-    */
    
+   */
 }
 
 

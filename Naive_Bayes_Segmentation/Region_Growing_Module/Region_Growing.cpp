@@ -85,24 +85,23 @@ void Region_Growing::slic_wrapper()
     Mat *lab_image = new Mat(src_rgb_img->rows, src_rgb_img->cols, CV_8UC3);
     cvtColor(*src_rgb_img, *lab_image, CV_BGR2Lab);
     int w = src_rgb_img->cols, h = src_rgb_img->rows;
-    int nr_superpixels = 1500;
-    int nc = 40;
+    int nr_superpixels = 1800;
+    int nc = 80;
     int slic_buffer = 100;
     double step = sqrt((w * h) / (double) nr_superpixels);
 
     Slic slic;
     slic.generate_superpixels(lab_image, step, nc);
     
-    Mat img = src_rgb_img->clone();
-    slic.display_contours(&img,  CV_RGB(255,0,0));
-    imwrite("slic_out.jpg", img);
-    for(int i=0; i<nr_superpixels+slic_buffer; i++){
-        //Region newRegion(&image);
-        //Region* r =new Region;// newRegion(&image,&gray_image);
-        //region_list.push_back(new Region);
+    Mat* img = new Mat;
+    *img = src_rgb_img->clone();
+    slic.display_contours(img,  CV_RGB(255,0,0));
+    imwrite("slic_out.jpg", *img);
+    
+    for(int i=0; i<nr_superpixels+slic_buffer; i++)
         region_list.push_back(unique_ptr<Region>(new Region));
        
-    }
+    
     
     for (int x = 0; x < src_rgb_img->cols; x++) {
         for (int y = 0; y < src_rgb_img->rows; y++) {
@@ -115,7 +114,6 @@ void Region_Growing::slic_wrapper()
     //slic_buffer is used. Here the empty and not needed regions are deleted
     while(r_size(region_list.size() - 1) == 0)
     {
-        //delete region_list[region_list.size()-1];
         region_list.erase(region_list.end()-1);
     }
     
@@ -125,9 +123,7 @@ void Region_Growing::slic_wrapper()
         for (int r = 0; r < region_num_img.rows; r++)
             region_num_img.at<float>(r,c) = (float)slic.getCluster(c, r);
     
-    
-        
-    writeCSV("first_reg_img" , 0, region_num_img);
+    delete img;
     delete lab_image;
     cout << "Finished generating SLIC superpixel" << endl;
 }
@@ -287,9 +283,9 @@ void Region_Growing::save_contours(int c)
     imwrite(s, out_img);
 }
 
-/* *********************************************** */
-/* for testing                                     */
-/* *********************************************** */
+/* *********************************************************** */
+/* exports an image as csv file                                */
+/* *********************************************************** */
 void Region_Growing::writeCSV(string filename, int n,cv::Mat m)
 {
     string file = filename +"_"+to_string(n)+".csv";

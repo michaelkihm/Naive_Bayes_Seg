@@ -64,11 +64,7 @@ public:
     //overloaded operators
     Region &operator+=( Region& r)
     {
-        int s1 = r.Reg_vector.size(), s2= Reg_vector.size();
         Reg_vector.splice(Reg_vector.begin(), r.Reg_vector); //splices r in front of Reg_vector
-        //Reg_boundary.splice(Reg_boundary.begin(), r.Reg_boundary); //splices r in front of Reg_vector
-        if((s1+s2) != Reg_vector.size())
-            cout << "merge did not work"<< endl;
         return *this;
         
     }
