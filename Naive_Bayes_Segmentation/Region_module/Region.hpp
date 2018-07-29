@@ -53,6 +53,7 @@ public:
     double compArr(/*Region**/Region& r, Mat *region_num_image);
     float getRegionNr(Mat *region_num_img);
     list<Point> *getRegList() {return &Reg_vector; }
+    list<Point> *getBoundList() {return &Reg_boundary; }
     
     bool is_adjacent(/*Region *r*/Region& r, Mat* region_num_img);
     void compute_boundary(Mat* region_num_image);
@@ -60,7 +61,6 @@ public:
   
     friend class Region_Growing;
     friend class Training;//??
-    
     //overloaded operators
     Region &operator+=( Region& r)
     {
@@ -69,12 +69,14 @@ public:
         
     }
     
+    
 };
 
 //gloabal overloaded operators
 inline bool operator==( Region& r1,  Region& r2){
     return r1.getSize() == r2.getSize() && r1.getMean() == r2.getMean() && r1.getStdDev() == r2.getStdDev();
 }
+
 
 
 #endif /* Region_hpp */

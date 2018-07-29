@@ -32,7 +32,7 @@ int main(int argc, const char * argv[]) {
     Mat gray;
     cvtColor(test, gray, CV_RGB2GRAY);
     
-   /*
+   
     Point p(12,3), p1(12,4), p3(12,5), p4(12,6), p5(12,7);
     Point p21(13,3), p22(13,4), p23(13,5), p24(13,6), p25(13,7);
  
@@ -58,14 +58,15 @@ int main(int argc, const char * argv[]) {
     cout << "r1 mean: "<<r.getMean() << endl;
     cout << "r2 mean: "<<r2.getMean() << endl;
     
-    r += r2;
+    r+=r2;;
     cout << "\n" << r.getStdDev() << endl;
-    cout << "r1 mean: "<<r.getMean() << endl;
-    cout << "r1 size: "<<r.getSize() << endl;
+    cout << "r_t mean: "<<r.getMean() << endl;
+    cout << "r_T size: "<<r.getSize() << endl;
     //bool b1 = r == r;
     //cout <<"is equal?: "<< b1 << endl;
      
     cout << "---------------------- \n" << endl;
+    /*
     Region_Growing test_r(&test);
     //test_ini.perform();
     
@@ -134,9 +135,9 @@ int main(int argc, const char * argv[]) {
     */
    cout << "\n--------------------------------" << endl;
 
-
-    string path = "/Users/michaelkihm/Desktop/train_data/human/color/1108/301007.seg";
-    string p2 = "/Users/michaelkihm/Desktop/BSDS300/images/train/301007.jpg";
+    // 301007, 376001, 35008, 227046, 176035
+    string path = "/Users/michaelkihm/Desktop/train_data/human/color/1108/176035.seg";
+    string p2 = "/Users/michaelkihm/Desktop/BSDS300/images/train/176035.jpg";
     Mat test_train = imread(p2);
     //Training test123;
     

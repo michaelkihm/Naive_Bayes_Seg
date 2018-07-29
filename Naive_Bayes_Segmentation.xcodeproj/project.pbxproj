@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C4026D65210DBC3900716D91 /* NaiveBayesClassifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4026D63210DBC3900716D91 /* NaiveBayesClassifier.cpp */; };
 		C40E156120DAFCB600658B2E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40E156020DAFCB600658B2E /* main.cpp */; };
 		C40E156C20DC20DC00658B2E /* Region.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40E156A20DC20DC00658B2E /* Region.cpp */; };
 		C40E156F20DD4CC300658B2E /* Region_Growing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C40E156D20DD4CC300658B2E /* Region_Growing.cpp */; };
@@ -27,6 +28,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C4026D63210DBC3900716D91 /* NaiveBayesClassifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NaiveBayesClassifier.cpp; sourceTree = "<group>"; };
+		C4026D64210DBC3900716D91 /* NaiveBayesClassifier.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NaiveBayesClassifier.hpp; sourceTree = "<group>"; };
 		C40E155D20DAFCB600658B2E /* Naive_Bayes_Segmentation */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Naive_Bayes_Segmentation; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40E156020DAFCB600658B2E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C40E156A20DC20DC00658B2E /* Region.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Region.cpp; sourceTree = "<group>"; };
@@ -104,6 +107,8 @@
 				C464BF9820ED38CB0075DFAB /* Training.cpp */,
 				C464BF9920ED38CB0075DFAB /* Training.hpp */,
 				C464BF9D20ED3BBF0075DFAB /* Stat.h */,
+				C4026D63210DBC3900716D91 /* NaiveBayesClassifier.cpp */,
+				C4026D64210DBC3900716D91 /* NaiveBayesClassifier.hpp */,
 			);
 			path = ML_module;
 			sourceTree = "<group>";
@@ -165,6 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C464BF9A20ED38CB0075DFAB /* Training.cpp in Sources */,
+				C4026D65210DBC3900716D91 /* NaiveBayesClassifier.cpp in Sources */,
 				C4B979E220E42B8D00E9709E /* slic.cpp in Sources */,
 				C40E156120DAFCB600658B2E /* main.cpp in Sources */,
 				C40E156F20DD4CC300658B2E /* Region_Growing.cpp in Sources */,

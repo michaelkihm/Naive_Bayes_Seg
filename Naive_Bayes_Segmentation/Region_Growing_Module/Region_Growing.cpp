@@ -93,10 +93,10 @@ void Region_Growing::slic_wrapper()
     Slic slic;
     slic.generate_superpixels(lab_image, step, nc);
     
-    Mat* img = new Mat;
-    *img = src_rgb_img->clone();
-    slic.display_contours(img,  CV_RGB(255,0,0));
-    imwrite("slic_out.jpg", *img);
+    //Mat* img = new Mat;
+    //*img = src_rgb_img->clone();
+    //slic.display_contours(img,  CV_RGB(255,0,0));
+    //imwrite("slic_out.jpg", *img);
     
     for(int i=0; i<nr_superpixels+slic_buffer; i++)
         region_list.push_back(unique_ptr<Region>(new Region));
@@ -123,7 +123,7 @@ void Region_Growing::slic_wrapper()
         for (int r = 0; r < region_num_img.rows; r++)
             region_num_img.at<float>(r,c) = (float)slic.getCluster(c, r);
     
-    delete img;
+    //delete img;
     delete lab_image;
     cout << "Finished generating SLIC superpixel" << endl;
 }
@@ -153,6 +153,8 @@ void Region_Growing::perform()
     unordered_set<int> rand_set;
     float p = 0.3;//, max_regions = 1;
     unsigned long temp, sat_count = 0;
+    double diff_stddev, diff_mean, arr;
+    int diff_size;
  
     
     cout << "Start region growing " <<endl;
@@ -172,10 +174,10 @@ void Region_Growing::perform()
                     if(region_list[*it]->is_adjacent(*region_list[i], &region_num_img))
                     {
                       
-                        double diff_stddev  = abs(region_list[*it]->getStdDev() - region_list[i]->getStdDev());
-                        double diff_mean    = region_list[*it]->getMean() - region_list[i]->getMean();
-                        double diff_size    = region_list[*it]->getSize() - region_list[i]->getSize();
-                        double arr          = region_list[*it]->compArr(*region_list[i], &region_num_img);
+                        diff_stddev  = abs(region_list[*it]->getStdDev() - region_list[i]->getStdDev());
+                        diff_mean    = abs(region_list[*it]->getMean() - region_list[i]->getMean());
+                        diff_size    = abs(region_list[*it]->getSize() - region_list[i]->getSize());
+                        arr          = region_list[*it]->compArr(*region_list[i], &region_num_img);
                         bool can_be_merged=true;
                         if(can_be_merged) //to implement: respond of ML module
                         {
@@ -204,7 +206,7 @@ void Region_Growing::display_contours()
     for(int i=0; i < region_list.size(); i++)
     {
         region_list[i]->compute_boundary(&region_num_img);
-        for(std::list<Point>::iterator it = region_list[i]->Reg_boundary.begin(); it != region_list[i]->Reg_boundary.end(); ++it)
+        for(auto it = region_list[i]->Reg_boundary.begin(); it != region_list[i]->Reg_boundary.end(); ++it)
         {
             out_img.at<cv::Vec3b>(*it)[0] = 0;
             out_img.at<cv::Vec3b>(*it)[1] = 0;

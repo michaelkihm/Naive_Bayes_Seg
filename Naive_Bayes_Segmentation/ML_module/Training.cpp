@@ -4,7 +4,7 @@
 //
 //  Created by Michael Kihm on 04.07.18.
 //  Copyright © 2018 MK. All rights reserved.
-//
+
 
 #include "Training.hpp"
 #include <set>
@@ -14,7 +14,7 @@
 /* read ground truth .seg file and initializes the                 */
 /*  ground truth region vector                                     */
 /* *************************************************************** */
-void Training::init()
+void Training::init_gt()
 {
    
     //read .seg file and initialize region_num_img
@@ -59,8 +59,10 @@ void Training::init()
         }
     }
     
+    create_gt_edge_image();
     //-----------------test stuff--------------------//
-    Mat out_img = src_rgb_img->clone();
+    Mat* out_img = new Mat;
+    *out_img=src_rgb_img->clone();
     
     
     
@@ -71,9 +73,9 @@ void Training::init()
             Point neigh(c+1,r);
             if(gt_reg_num_image->at<float>(current) != gt_reg_num_image->at<float>(neigh))
             {
-                out_img.at<cv::Vec3b>(current)[0] = 0;
-                out_img.at<cv::Vec3b>(current)[1] = 0;
-                out_img.at<cv::Vec3b>(current)[2] = 255;
+                out_img->at<cv::Vec3b>(current)[0] = 0;
+                out_img->at<cv::Vec3b>(current)[1] = 0;
+                out_img->at<cv::Vec3b>(current)[2] = 255;
             }
         }
     }
@@ -84,21 +86,52 @@ void Training::init()
             Point neigh(c,r+1);
             if(gt_reg_num_image->at<float>(current) != gt_reg_num_image->at<float>(neigh))
             {
-                out_img.at<cv::Vec3b>(current)[0] = 0;
-                out_img.at<cv::Vec3b>(current)[1] = 0;
-                out_img.at<cv::Vec3b>(current)[2] = 255;
+                out_img->at<cv::Vec3b>(current)[0] = 0;
+                out_img->at<cv::Vec3b>(current)[1] = 0;
+                out_img->at<cv::Vec3b>(current)[2] = 255;
             }
         }
     }
     
  
-    imwrite("gt_img.jpg", out_img);
+    imwrite("gt_img.jpg", *out_img);
    
-    
+    delete out_img;
     if(gt_region_vector.size() != segments)
         cout << "Error during init ground truth" <<endl;
     
 }
+
+/* *************************************************************** */
+/* draws an edge image of the ground truth image                   */
+/* *************************************************************** */
+void Training::create_gt_edge_image()
+{
+    gt_edge_image = new Mat;
+    *gt_edge_image = Mat::zeros(src_gray_img.size(), CV_8UC1);
+    
+    //compute column differences
+    for(int r=0; r < src_rgb_img->rows; r++){
+        for(int c = 0; c < src_rgb_img->cols -1; c++){
+            Point current(c,r);
+            Point neigh(c+1,r);
+            if(gt_reg_num_image->at<float>(current) != gt_reg_num_image->at<float>(neigh))
+                gt_edge_image->at<uchar>(current) = 255;
+        }
+    }
+    //compute row differences
+    for(int c=0; c < src_rgb_img->cols; c++){
+        for(int r = 0; r < src_rgb_img->rows -1; r++){
+            Point current(c,r);
+            Point neigh(c,r+1);
+            if(gt_reg_num_image->at<float>(current) != gt_reg_num_image->at<float>(neigh))
+                gt_edge_image->at<uchar>(current) = 255;
+        }
+    }
+    
+}
+
+
 
 /* *************************************************************** */
 /* perform trainig                                                 */
@@ -108,40 +141,42 @@ void Training::train()
 {
     
     unordered_set<int> rand_set;
-    float p = 0.10;
+    float p = 0.20;
     unsigned long temp, sat_count = 0;
     int bmerged;
     double diff_stddev, diff_mean, arr;
     int diff_size;
     ofstream outfile;
-    outfile.open("test.txt", std::ios_base::app);
+    outfile.open("test.csv", std::ios_base::app);
+    int merged_per_rand_set = 10;
     //int c=0;
     
     //------------------------------------//
     //call slic wrapper
-    slic_wrapper();
+    //slic_wrapper();
+    init();
     
     //------------------------------------//
     //init ground truth data
-    init();
+    init_gt();
     
     //------------------------------------//
     //start training
     string s = "Start training image ";// + ;
     cout << s << endl;
-    while(sat_count < 150 && region_list.size() >= segments+1)
+    while(sat_count < 10 && region_list.size() >= segments+1)
     {
-        //if(region_list.size() > 560)
-        rand_num(p, rand_set);
-       // else
-         //   rand_num(1, rand_set);
+        //if(region_list.size() > 400)
+            rand_num(p, rand_set);
+        //else
+          //  rand_num(1, rand_set);
        
         bmerged = 0;
         temp = region_list.size();
-        cout << region_list.size() << endl;
+        //cout << region_list.size() << endl;
         for(unordered_set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
         {
-            if(*it < region_list.size() && bmerged < 4)
+            if(*it < region_list.size() && bmerged <= merged_per_rand_set)
             {
                 for(int i = *it+1; i != *it; i++)
                 {
@@ -152,13 +187,13 @@ void Training::train()
                         
                         diff_stddev  = abs( region_list[*it]->getStdDev() - region_list[i]->getStdDev() );
                         diff_mean    = abs( region_list[*it]->getMean() - region_list[i]->getMean() );
-                        diff_size    = ( region_list[*it]->getSize() - region_list[i]->getSize() );
+                        diff_size    = abs(region_list[*it]->getSize() - region_list[i]->getSize() );
                         arr          = region_list[*it]->compArr(*region_list[i], &region_num_img);
                         
                         
                         if( bcan_be_merged(*it, i) ) //to implement
                         {
-                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<abs(diff_size)<<" "<<arr<<" "<< 1 << endl;//save result for trainings data
+                            outfile<<diff_stddev<<","<<diff_mean<<","<<diff_size<<","<<arr<<","<< 1<<"\n"<< endl;//save result for trainings data
                             merge_regions(*it,i);
                             update_reg_num_image(*it);
                             bmerged++; //used to only merge one region pair of each rand vector
@@ -166,7 +201,7 @@ void Training::train()
                         }
                         else
                         {
-                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<abs(diff_size)<<" "<<arr<<" "<< 0 << endl;//save result for trainings data
+                            outfile<<diff_stddev<<","<<diff_mean<<","<<diff_size<<","<<arr<<","<< 0 << "\n"<<endl;//save result for trainings data
                         }
                     }
                 }
@@ -174,20 +209,20 @@ void Training::train()
         }
         if( temp == region_list.size() )
             sat_count++;
-        //if(c==5)
-        //{
-         //   save_contours(sat_count+=1);
-          //  c=0;
-        //}
-        //c+=1;
     }
    
-    
-    save_contours(0);
+    for(int i=0; i < region_list.size(); i++)
+        update_reg_num_image(i);
+    //save_contours(0);
+    //delete new pointer images
     delete gt_reg_num_image;
+    delete gt_edge_image;
+    
+    
     cout << "region_list size "<<region_list.size() <<" segments: "<<segments<< endl;
     cout << "Finished training" <<endl;
     display_contours();
+    writeCSV("trained_image",0,region_num_img);
 }
 
 
@@ -196,7 +231,7 @@ void Training::train()
 /* ********************************************* */
 bool Training::bcan_be_merged(int r1, int r2)
 {
-    return find_majority_element(r1) == find_majority_element(r2);// && find_majority_element(r1)!=false && find_majority_element(r2)!=false ? true : false;
+    return find_majority_element(r1) == find_majority_element(r2);// && boundary_test(r1,r2);// && find_majority_element(r1)!=false && find_majority_element(r2)!=false ? true : false;
     //return find_majority_element(r1) && find_majority_element(r2) ? true : false;
 }
 
@@ -208,15 +243,15 @@ int Training::find_majority_element(int r_index)
 {
     //fill vector with ground truth region number image
     list<Point> *reg_list = region_list[r_index]->getRegList();
-    vector<float> v, check_vec;
+    vector<float> v;// check_vec;
     update_reg_num_image(r_index);
     
-    for(auto it = reg_list->begin(); it != reg_list->end(); ++it)
-        check_vec.push_back(region_num_img.at<float>(*it));
+   // for(auto it = reg_list->begin(); it != reg_list->end(); ++it)
+     //   check_vec.push_back(region_num_img.at<float>(*it));
     
-    for(int i=0; i < check_vec.size()-1; i++)
-        if(check_vec[i] != check_vec[i+1])
-            cout << "different numbers inside one region!!"<<endl;
+   // for(int i=0; i < check_vec.size()-1; i++)
+     //   if(check_vec[i] != check_vec[i+1])
+       //     cout << "different numbers inside one region!!"<<endl;
     
 
    
@@ -244,34 +279,46 @@ int Training::find_majority_element(int r_index)
         }
     }
     return v[maj_index];
-   /*
-    int cnt =0;
-    for (int i = 1; i < v.size(); i++)
-        if(v[i]==v[maj_index])
-            cnt++;
-    if(region_list.size() > 800)
-    {
-        if(cnt >= v.size()*0.7)
-            return v[maj_index];
-        else
-            return false;
-    }
-    else if(region_list.size() < 800 && region_list.size() > 600)
-    {
-        if(cnt >= v.size()*0.5)
-            return v[maj_index];
-        else
-            return false;
-    }
-    else
-    {
-        if(cnt >= v.size()*0.3)
-            return v[maj_index];
-        else
-            return false;
-    }
-   
-   */
 }
 
+bool Training::boundary_test(int r1, int r2)
+{
+    update_reg_num_image(r1);
+    update_reg_num_image(r2);
+    
+    region_list[r1]->compute_boundary(&region_num_img);
+    region_list[r2]->compute_boundary(&region_num_img);
+    list<Point> *bound_list_r1 = region_list[r1]->getBoundList();
+    list<Point> *bound_list_r2 = region_list[r2]->getBoundList();
+    
+    
+    Region r;
+    list<Point> *reg_l1   = region_list[r1]->getRegList();
+    for(auto it = reg_l1->begin();  it != reg_l1->end(); ++it)
+        r.push_back(*it);
+    list<Point> *reg_l2   = region_list[r1]->getRegList();
+    for(auto it = reg_l2->begin();  it != reg_l2->end(); ++it)
+        r.push_back(*it);
+    
+    
+    list<Point> *reg_list   = r.getRegList();
+    //int cnt = 0;
+    for(auto it = reg_list->begin(); it != reg_list->end(); ++it)
+    {
+        if(gt_edge_image->at<uchar>(*it) == 255 && !is_in_list(*it, *bound_list_r1) && !is_in_list(*it, *bound_list_r2))
+            return false;
+    }
+    return true;
+    
+
+}
+
+bool Training::is_in_list(Point p, list<Point> &l)
+{
+    for(auto it = l.begin(); it != l.end(); ++it)
+        if(p == *it)
+            return true;
+    return false;
+        
+}
 

@@ -33,6 +33,7 @@ private:
     string image_path;
     string seg_file_path;
     Mat *gt_reg_num_image;
+    Mat *gt_edge_image;
     int segments;
 public:
     Training(string& _image_path, string& _seg_file_path, Mat* _src_img)
@@ -41,12 +42,14 @@ public:
     ~Training() {}
     
     vector<Stat>* get_train_data() { return &train_data; }
-    void init();
+    void init_gt();
+    void create_gt_edge_image();
     void train();
     void save_train_data(); //to be implemented
     bool bcan_be_merged(int r1, int r2);
     int  find_majority_element(/*vector<int> v, */int r_index);
-
+    bool boundary_test(int r1, int r2);
+    bool is_in_list(Point p, list<Point> &l);
 };
 
 

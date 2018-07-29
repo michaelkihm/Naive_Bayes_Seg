@@ -13,12 +13,15 @@
 
 struct Stat
 {
-    const double arr;
-    const double color;
-    const double text;
-    const int    size;
-    const bool    bmerged;
+    //const double arr;
+    //const double color;
+    //const double text;
+    //const int    size;
+    double values[4]; // 0)colorDiff    1) textureDiff    2) arrangement    3) size
+    bool    bmerged;
     
-    Stat( double _arr, double _color, double _text, int _size, bool _bmerged):arr(_arr),color(_color),text(_text),size(_size),bmerged(_bmerged) { }
+    Stat( double _arr, double _color, double _text, double _size, bool _bmerged)
+    :values{_arr, _color, _text, _size},bmerged(_bmerged) { }
 };
 #endif /* Stat_h */
+
