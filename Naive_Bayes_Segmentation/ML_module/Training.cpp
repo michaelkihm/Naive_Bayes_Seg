@@ -147,14 +147,14 @@ void Training::train()
     double diff_stddev, diff_mean, arr;
     int diff_size;
     ofstream outfile;
-    outfile.open("test.csv", std::ios_base::app);
+    outfile.open("test.txt", std::ios_base::app);
     int merged_per_rand_set = 10;
     //int c=0;
     
     //------------------------------------//
     //call slic wrapper
-    //slic_wrapper();
-    init();
+    slic_wrapper();
+    //init();
     
     //------------------------------------//
     //init ground truth data
@@ -193,7 +193,7 @@ void Training::train()
                         
                         if( bcan_be_merged(*it, i) ) //to implement
                         {
-                            outfile<<diff_stddev<<","<<diff_mean<<","<<diff_size<<","<<arr<<","<< 1<<"\n"<< endl;//save result for trainings data
+                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 1<<"\n"<< endl;//save result for trainings data
                             merge_regions(*it,i);
                             update_reg_num_image(*it);
                             bmerged++; //used to only merge one region pair of each rand vector
@@ -201,7 +201,7 @@ void Training::train()
                         }
                         else
                         {
-                            outfile<<diff_stddev<<","<<diff_mean<<","<<diff_size<<","<<arr<<","<< 0 << "\n"<<endl;//save result for trainings data
+                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 0 << "\n"<<endl;//save result for trainings data
                         }
                     }
                 }

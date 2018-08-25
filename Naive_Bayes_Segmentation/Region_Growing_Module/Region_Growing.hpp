@@ -13,6 +13,8 @@
 #include <unordered_set>
 #include "../Region_module/Region.hpp"
 #include "slic.h"
+#include "NaiveBayesClassifier.hpp"
+#include "MergeTableEntry.h"
 
 
 
@@ -28,10 +30,8 @@ protected:
     //list<Region*> region_list;
     
     //methods
-    //void push_back(Region *r) { region_list.push_back(r); }
-    //void deleteRegion(int index) { region_list.erase(region_list.begin() + index); }
-    //void merge(int r1_ind, int r2_ind);
-    //void initialize();
+    void merge_region(vector<MergeTableEntry>& table, int num_of_regions_to_merge);
+    
 public:
     Region_Growing(Mat *src);
     //Region_Growing()  = delete;

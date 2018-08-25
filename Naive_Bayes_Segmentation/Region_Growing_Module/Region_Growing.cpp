@@ -28,8 +28,16 @@ Region_Growing::Region_Growing(Mat *src):src_rgb_img(src)
 /* ************************************ */
 void Region_Growing::merge_regions(int r1_ind, int r2_ind)
 {
-    if(r1_ind > region_list.size() || r2_ind > region_list.size())
-        cout << "bad access merge regions func" << endl;
+    if(r1_ind > region_list.size())
+    {
+       *region_list.back() += *region_list[r2_ind];
+       delete_region(r2_ind);
+    }
+    else if(r2_ind > region_list.size())
+    {
+        *region_list[r1_ind] += *region_list.back();
+        delete_region((int)region_list.size() -1 );
+    }
     else
     {
         *region_list[r1_ind] += *region_list[r2_ind];
@@ -135,8 +143,8 @@ void Region_Growing::update_reg_num_image(int i)
 {
     if(i < region_list.size())
     {
-    float num = region_list[i]->getRegionNr(&region_num_img);
-     for(auto it = region_list[i]->Reg_vector.begin(); it != region_list[i]->Reg_vector.end(); ++it)
+        float num = region_list[i]->getRegionNr(&region_num_img);
+        for(auto it = region_list[i]->Reg_vector.begin(); it != region_list[i]->Reg_vector.end(); ++it)
          region_num_img.at<float>(*it) = num;
     }
     else
@@ -149,18 +157,33 @@ void Region_Growing::update_reg_num_image(int i)
 /* ****************************************** */
 void Region_Growing::perform()
 {
-    slic_wrapper();
+    
     unordered_set<int> rand_set;
-    float p = 0.3;//, max_regions = 1;
+    float p = 0.03;//, max_regions = 1;
     unsigned long temp, sat_count = 0;
-    double diff_stddev, diff_mean, arr;
-    int diff_size;
+    double diff_stddev, diff_mean, arr, merge_prob;
+    int diff_size, m_size=1;
+    vector<MergeTableEntry> merge_table;
+    
+    //-------------------------//
+    //init region vector with slic
+    slic_wrapper();
  
+    //-------------------------//
+    //init Naive Bayes classifier
+    NaiveBayesClassifier n_bc("test.txt");
+    n_bc.init();
     
     cout << "Start region growing " <<endl;
     
-    while(sat_count != 300 /*&& region_list.size() > max_regions*/)
+    while(sat_count < 15 /* ||m_size != 0/*&& region_list.size() > max_regions*/)
     {
+        cout << region_list.size() << endl;
+        if (region_list.size() < 500)       //p control to be put in an extra function
+            p = 0.25;
+        else if(region_list.size() <= 100)
+            p = 1.0;
+        merge_table.clear(); //clear table of merging probabilities;
         rand_num(p, rand_set);
         temp = region_list.size();
         for(unordered_set<int>::iterator it = rand_set.begin(); it != rand_set.end(); ++it)
@@ -178,19 +201,28 @@ void Region_Growing::perform()
                         diff_mean    = abs(region_list[*it]->getMean() - region_list[i]->getMean());
                         diff_size    = abs(region_list[*it]->getSize() - region_list[i]->getSize());
                         arr          = region_list[*it]->compArr(*region_list[i], &region_num_img);
-                        bool can_be_merged=true;
-                        if(can_be_merged) //to implement: respond of ML module
+                        //cout << n_bc.predict(diff_mean,diff_stddev, arr, diff_size) << endl;
+                        merge_prob = n_bc.predict(diff_mean,diff_stddev, arr, diff_size);
+                        if(merge_prob > 0.5) //to implement: respond of ML module
                         {
-                            merge_regions(*it,i);
-                            update_reg_num_image(*it);
+                            //merge_regions(*it,i);
+                            //update_reg_num_image(*it);
+                            merge_table.push_back(MergeTableEntry(*it,i,merge_prob) );
                             break;
                         }
                     }
                 }
             }
         }
-        if( temp == region_list.size() )
+        //merge_stuff
+        m_size = (int)merge_table.size();
+        if(m_size != 0)
+            merge_region(merge_table, 5);
+        
+        if( m_size == 0 )
             sat_count++;
+        else
+            sat_count = 0;
     }
     cout << "Finished region growing" <<endl;
 }
@@ -249,7 +281,7 @@ void Region_Growing::display_contours()
 
 
 /* *********************************************** */
-/* for testing                                     */
+/* for testing - saves contour image               */
 /* *********************************************** */
 void Region_Growing::save_contours(int c)
 {
@@ -285,6 +317,59 @@ void Region_Growing::save_contours(int c)
     imwrite(s, out_img);
 }
 
+
+/* *********************************************************** */
+/*    merge the regions with the highest merging probability   */
+/*    merges a certain number of regions, given with integer   */
+/*    num_of_regions_to_merge                                  */
+/* *********************************************************** */
+void Region_Growing::merge_region(vector<MergeTableEntry>& table, int num_of_regions_to_merge)
+{
+    sort(table.begin(),table.end());
+    reverse(table.begin(),table.end());
+    merge_regions(table[0].r1,table[0].r2);
+    update_reg_num_image(table[0].r1);
+    
+    /*
+    if(num_of_regions_to_merge > region_list.size())
+        merge_region(table, (int)region_list.size()-1);
+    else
+    {
+        for(int i=0; i < num_of_regions_to_merge; i++)
+        {
+            if(table[i].r1-i == 0)
+            {
+                merge_regions(0,table[i].r2-i);
+                update_reg_num_image(0);
+            }
+            else if(table[i].r2-i == 0)
+            {
+                merge_regions(table[i].r1-i,0);
+                update_reg_num_image(table[i].r1-i);
+            }
+            /*
+            else if(table[i].r1-i >= region_list.size())
+            {
+                merge_regions((int)region_list.size()-1,table[i].r2-i);
+                update_reg_num_image((int)region_list.size()-1);
+            }
+            else if(table[i].r2-i >= region_list.size())
+            {
+                merge_regions(table[i].r1-i,(int)region_list.size()-1);
+                update_reg_num_image(table[i].r1-i);
+            }
+     
+            else
+            {
+                merge_regions(table[i].r1-i,table[i].r2-i);
+                update_reg_num_image(table[i].r1-i);
+            }
+            
+        }
+    }
+*/
+}
+
 /* *********************************************************** */
 /* exports an image as csv file                                */
 /* *********************************************************** */
@@ -295,3 +380,5 @@ void Region_Growing::writeCSV(string filename, int n,cv::Mat m)
     outputFile << format(m, cv::Formatter::FMT_CSV) << endl;
     outputFile.close();
 }
+
+

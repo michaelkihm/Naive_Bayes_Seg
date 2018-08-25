@@ -12,9 +12,9 @@
 #include <iostream>
 #include <stdio.h>
 #include "Stat.h"
-#include <math.h>
+#include <cmath>
 #include <vector>
-#include <string.h>
+#include <string>
 
 using namespace std;
 
@@ -25,7 +25,7 @@ private:
     const double eps= 4.4e-6; //maximum error epsilon
     const int r=0;            //derivative of Gaussian KDE - NB:LEAVE r=0
     vector<int>    pClusterIndex;
-    vector<double> pClusterCenter, a_terms, Bterms, training_data;
+    vector<double> pClusterCenter, a_terms, Bterms, training_data ;
     double rx, q;
     const double h;
     int K, p;
@@ -35,12 +35,12 @@ private:
     void compute_Bterms();
     void compute_a();
     void calc_cluster_center();
-    void  choose_parameters();
+    void choose_parameters();
     void calc_cluster_index();
     
     
 public:
-    GaussianKDE(double _h, vector<double> _training_data):h(_h),training_data(_training_data) { } //needs already normalized training data
+    GaussianKDE(double _h, vector<double> _training_data):h(_h),training_data(_training_data) { init(); } //needs already normalized training data
     void init();
     double predict(double input);;
 };

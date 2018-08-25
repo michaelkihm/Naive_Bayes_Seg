@@ -98,7 +98,7 @@ double GaussianKDE::predict(double input)
         }
     }
     
-    
+    delete temp3;
     return likelihood;
 }
 
@@ -201,7 +201,7 @@ void GaussianKDE::compute_Bterms()
     for(int i=0; i<N; i++)
     {
         int cluster_number=pClusterIndex[i];
-        double temp1=(Bterms[i]-pClusterCenter[cluster_number])/h;
+        double temp1=(training_data[i]-pClusterCenter[cluster_number])/h;
         double temp2=exp(-temp1*temp1/2);
         temp3[0]=1;
         for(int k=1; k<p+r; k++)
@@ -225,7 +225,7 @@ void GaussianKDE::compute_Bterms()
     for(int i=0; i<resultVec.size();i++)
         Bterms.push_back(resultVec[i]);
     
-    
+    delete temp3;
     
 }
 
@@ -241,42 +241,40 @@ void GaussianKDE::compute_a(){
     double *l_constant;
     l_constant=new double[((int)floor((double)r/2))+1];
     l_constant[0]=1;
-    for(int l=1; l <= (int)floor((double)r/2); l++){
+    for(int l=1; l <= (int)floor((double)r/2); l++)
         l_constant[l]=l_constant[l-1]*(-1.0/(2*l));
         
-    }
+    
     
     double *m_constant;
     m_constant=new double[r+1];
     m_constant[0]=1;
-    for(int m=1; m <= r; m++){
+    for(int m=1; m <= r; m++)
         m_constant[m]=m_constant[m-1]*(-1.0/m);
         
-    }
+    
     
     int num_of_a_terms=0;
-    for(int l=0; l <= (int)floor((double)r/2); l++){
-        for(int m=0; m <= r-(2*l); m++){
+    for(int l=0; l <= (int)floor((double)r/2); l++)
+        for(int m=0; m <= r-(2*l); m++)
             num_of_a_terms +=1;
-        }
-    }
-    
-    double *a_terms_temp;
-    a_terms_temp = new double[num_of_a_terms];
+  
+    double *a_terms_temp = new double[num_of_a_terms];
     int k=0;
-    for(int l=0; l <= (int)floor((double)r/2); l++){
+    for(int l=0; l <= (int)floor((double)r/2); l++)
+    {
         for(int m=0; m <= r-(2*l); m++){
             a_terms_temp[k]=(l_constant[l]*m_constant[m]*r_factorial)/((double)factorial(r-(2*l)-m));
             k++;
         }
     }
     
-    for(int i=0; i<num_of_a_terms; i++){
-        a_terms.push_back(a_terms[i]);
-    }
+    for(int i=0; i<num_of_a_terms; i++)
+        a_terms.push_back(a_terms_temp[i]);
     
-    delete a_terms_temp;
     
+    delete [] a_terms_temp;
+    delete m_constant;
 }
 
 /* *********************************************************************************** */
