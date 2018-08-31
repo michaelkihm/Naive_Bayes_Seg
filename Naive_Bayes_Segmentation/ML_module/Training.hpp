@@ -34,10 +34,12 @@ private:
     string seg_file_path;
     Mat *gt_reg_num_image;
     Mat *gt_edge_image;
+    
     int segments;
 public:
-    Training(string& _image_path, string& _seg_file_path, Mat* _src_img)
-            :Region_Growing(_src_img), image_path(_image_path), seg_file_path(_seg_file_path) { }
+    Training(string& _image_path, string& _seg_file_path /*, Mat* _src_img*/)
+    :Region_Growing(/*_src_img*/_image_path), image_path(_image_path), seg_file_path(_seg_file_path) { }
+    
     
     ~Training() {}
     

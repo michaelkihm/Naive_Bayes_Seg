@@ -62,13 +62,13 @@ void Training::init_gt()
     create_gt_edge_image();
     //-----------------test stuff--------------------//
     Mat* out_img = new Mat;
-    *out_img=src_rgb_img->clone();
+    *out_img=src_rgb_img.clone();
     
     
     
     //compute column differences
-    for(int r=0; r < src_rgb_img->rows; r++){
-        for(int c = 0; c < src_rgb_img->cols -1; c++){
+    for(int r=0; r < src_rgb_img.rows; r++){
+        for(int c = 0; c < src_rgb_img.cols -1; c++){
             Point current(c,r);
             Point neigh(c+1,r);
             if(gt_reg_num_image->at<float>(current) != gt_reg_num_image->at<float>(neigh))
@@ -80,8 +80,8 @@ void Training::init_gt()
         }
     }
     //compute row differences
-    for(int c=0; c < src_rgb_img->cols; c++){
-        for(int r = 0; r < src_rgb_img->rows -1; r++){
+    for(int c=0; c < src_rgb_img.cols; c++){
+        for(int r = 0; r < src_rgb_img.rows -1; r++){
             Point current(c,r);
             Point neigh(c,r+1);
             if(gt_reg_num_image->at<float>(current) != gt_reg_num_image->at<float>(neigh))
@@ -111,8 +111,8 @@ void Training::create_gt_edge_image()
     *gt_edge_image = Mat::zeros(src_gray_img.size(), CV_8UC1);
     
     //compute column differences
-    for(int r=0; r < src_rgb_img->rows; r++){
-        for(int c = 0; c < src_rgb_img->cols -1; c++){
+    for(int r=0; r < src_rgb_img.rows; r++){
+        for(int c = 0; c < src_rgb_img.cols -1; c++){
             Point current(c,r);
             Point neigh(c+1,r);
             if(gt_reg_num_image->at<float>(current) != gt_reg_num_image->at<float>(neigh))
@@ -120,8 +120,8 @@ void Training::create_gt_edge_image()
         }
     }
     //compute row differences
-    for(int c=0; c < src_rgb_img->cols; c++){
-        for(int r = 0; r < src_rgb_img->rows -1; r++){
+    for(int c=0; c < src_rgb_img.cols; c++){
+        for(int r = 0; r < src_rgb_img.rows -1; r++){
             Point current(c,r);
             Point neigh(c,r+1);
             if(gt_reg_num_image->at<float>(current) != gt_reg_num_image->at<float>(neigh))
@@ -141,13 +141,14 @@ void Training::train()
 {
     
     unordered_set<int> rand_set;
-    float p = 0.20;
+    float p = 0.05;
     unsigned long temp, sat_count = 0;
     int bmerged;
     double diff_stddev, diff_mean, arr;
     int diff_size;
     ofstream outfile;
-    outfile.open("test.txt", std::ios_base::app);
+    outfile.open("test_data.txt", std::ios_base::app);
+  
     int merged_per_rand_set = 10;
     //int c=0;
     
@@ -166,10 +167,13 @@ void Training::train()
     cout << s << endl;
     while(sat_count < 10 && region_list.size() >= segments+1)
     {
-        //if(region_list.size() > 400)
-            rand_num(p, rand_set);
-        //else
-          //  rand_num(1, rand_set);
+        if (region_list.size() < 500)       //p control to be put in an extra function
+            p = 0.25;
+        else if(region_list.size() <= 100)
+            p = 1.0;
+        
+        rand_num(p, rand_set);
+  
        
         bmerged = 0;
         temp = region_list.size();
@@ -193,7 +197,7 @@ void Training::train()
                         
                         if( bcan_be_merged(*it, i) ) //to implement
                         {
-                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 1<<"\n"<< endl;//save result for trainings data
+                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 1<< endl;//save result for trainings data
                             merge_regions(*it,i);
                             update_reg_num_image(*it);
                             bmerged++; //used to only merge one region pair of each rand vector
@@ -201,7 +205,7 @@ void Training::train()
                         }
                         else
                         {
-                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 0 << "\n"<<endl;//save result for trainings data
+                            outfile<<diff_stddev<<" "<<diff_mean<<" "<<diff_size<<" "<<arr<<" "<< 0 << endl;//save result for trainings data
                         }
                     }
                 }

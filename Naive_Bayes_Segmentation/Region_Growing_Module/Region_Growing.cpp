@@ -16,10 +16,11 @@
 /* ************************************ */
 /* constructor                          */
 /* ************************************ */
-Region_Growing::Region_Growing(Mat *src):src_rgb_img(src)
+Region_Growing::Region_Growing(/*Mat *src*/string path)/*:src_rgb_img(src)*/
 {
-    cvtColor(*src_rgb_img, src_gray_img, CV_RGB2GRAY);
-    Region::setSourceImages(src_rgb_img, &src_gray_img);  
+    src_rgb_img = imread(path);
+    cvtColor(src_rgb_img, src_gray_img, CV_RGB2GRAY);
+    Region::setSourceImages(&src_rgb_img, &src_gray_img);  
 }
 
 
@@ -70,10 +71,10 @@ void Region_Growing::rand_num(float p, unordered_set<int>& rand_set)
 void Region_Growing::init()
 {
     float count=0;
-    region_num_img = Mat::zeros(src_rgb_img->rows,src_rgb_img->cols, CV_32FC1);
+    region_num_img = Mat::zeros(src_rgb_img.rows,src_rgb_img.cols, CV_32FC1);
     
-    for(int r=0; r < src_rgb_img->rows; r++ ){
-        for(int c=0; c < src_rgb_img->cols; c++ )
+    for(int r=0; r < src_rgb_img.rows; r++ ){
+        for(int c=0; c < src_rgb_img.cols; c++ )
         {
             region_list.push_back(unique_ptr<Region>(new Region));
             Point p = Point(c,r);
@@ -90,9 +91,9 @@ void Region_Growing::init()
 void Region_Growing::slic_wrapper()
 {
     
-    Mat *lab_image = new Mat(src_rgb_img->rows, src_rgb_img->cols, CV_8UC3);
-    cvtColor(*src_rgb_img, *lab_image, CV_BGR2Lab);
-    int w = src_rgb_img->cols, h = src_rgb_img->rows;
+    Mat *lab_image = new Mat(src_rgb_img.rows, src_rgb_img.cols, CV_8UC3);
+    cvtColor(src_rgb_img, *lab_image, CV_BGR2Lab);
+    int w = src_rgb_img.cols, h = src_rgb_img.rows;
     int nr_superpixels = 1800;
     int nc = 80;
     int slic_buffer = 100;
@@ -111,8 +112,8 @@ void Region_Growing::slic_wrapper()
        
     
     
-    for (int x = 0; x < src_rgb_img->cols; x++) {
-        for (int y = 0; y < src_rgb_img->rows; y++) {
+    for (int x = 0; x < src_rgb_img.cols; x++) {
+        for (int y = 0; y < src_rgb_img.rows; y++) {
             Point p = Point(x,y);
             region_list[ slic.getCluster(x, y) ]->push_back(p);    
         }
@@ -126,7 +127,7 @@ void Region_Growing::slic_wrapper()
     }
     
     //initialize region_num_img
-    region_num_img = Mat::zeros(src_rgb_img->rows,src_rgb_img->cols, CV_32FC1);
+    region_num_img = Mat::zeros(src_rgb_img.rows,src_rgb_img.cols, CV_32FC1);
     for (int c = 0; c < region_num_img.cols; c++)
         for (int r = 0; r < region_num_img.rows; r++)
             region_num_img.at<float>(r,c) = (float)slic.getCluster(c, r);
@@ -159,7 +160,7 @@ void Region_Growing::perform()
 {
     
     unordered_set<int> rand_set;
-    float p = 0.03;//, max_regions = 1;
+    float p = 0.05;//, max_regions = 1;
     unsigned long temp, sat_count = 0;
     double diff_stddev, diff_mean, arr, merge_prob;
     int diff_size, m_size=1;
@@ -176,7 +177,7 @@ void Region_Growing::perform()
     
     cout << "Start region growing " <<endl;
     
-    while(sat_count < 15 /* ||m_size != 0/*&& region_list.size() > max_regions*/)
+    while(sat_count < 50 /* ||m_size != 0/*&& region_list.size() > max_regions*/)
     {
         cout << region_list.size() << endl;
         if (region_list.size() < 500)       //p control to be put in an extra function
@@ -233,7 +234,7 @@ void Region_Growing::perform()
 /* *********************************************** */
 void Region_Growing::display_contours()
 {
-    out_img = src_rgb_img->clone();
+    out_img = src_rgb_img.clone();
     /*
     for(int i=0; i < region_list.size(); i++)
     {
@@ -249,8 +250,8 @@ void Region_Growing::display_contours()
     
     
     //compute column differences
-    for(int r=0; r < src_rgb_img->rows; r++){
-        for(int c = 0; c < src_rgb_img->cols -1; c++){
+    for(int r=0; r < src_rgb_img.rows; r++){
+        for(int c = 0; c < src_rgb_img.cols -1; c++){
             Point current(c,r);
             Point neigh(c+1,r);
             if(region_num_img.at<float>(current) != region_num_img.at<float>(neigh))
@@ -262,8 +263,8 @@ void Region_Growing::display_contours()
         }
     }
     //compute row differences
-    for(int c=0; c < src_rgb_img->cols; c++){
-        for(int r = 0; r < src_rgb_img->rows -1; r++){
+    for(int c=0; c < src_rgb_img.cols; c++){
+        for(int r = 0; r < src_rgb_img.rows -1; r++){
             Point current(c,r);
             Point neigh(c,r+1);
             if(region_num_img.at<float>(current) != region_num_img.at<float>(neigh))
@@ -285,11 +286,11 @@ void Region_Growing::display_contours()
 /* *********************************************** */
 void Region_Growing::save_contours(int c)
 {
-    out_img = src_rgb_img->clone();
+    out_img = src_rgb_img.clone();
     string s = "image_"+std::to_string(c)+".jpg";
     //compute column differences
-    for(int r=0; r < src_rgb_img->rows; r++){
-        for(int c = 0; c < src_rgb_img->cols -1; c++){
+    for(int r=0; r < src_rgb_img.rows; r++){
+        for(int c = 0; c < src_rgb_img.cols -1; c++){
             Point current(c,r);
             Point neigh(c+1,r);
             if(region_num_img.at<float>(current) != region_num_img.at<float>(neigh))
@@ -301,8 +302,8 @@ void Region_Growing::save_contours(int c)
         }
     }
     //compute row differences
-    for(int c=0; c < src_rgb_img->cols; c++){
-        for(int r = 0; r < src_rgb_img->rows -1; r++){
+    for(int c=0; c < src_rgb_img.cols; c++){
+        for(int r = 0; r < src_rgb_img.rows -1; r++){
             Point current(c,r);
             Point neigh(c,r+1);
             if(region_num_img.at<float>(current) != region_num_img.at<float>(neigh))
